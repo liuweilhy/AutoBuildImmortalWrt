@@ -40,6 +40,24 @@ PACKAGES="$PACKAGES openssh-sftp-server"
 PACKAGES="$PACKAGES fdisk"
 PACKAGES="$PACKAGES script-utils"
 PACKAGES="$PACKAGES luci-i18n-samba4-zh-cn"
+# 增加一些常用组件
+PACKAGES="$PACKAGES luci-i18n-vlmcsd-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-nlbwmon-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-zerotier-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-socat-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-smartdns-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-ddns-go-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-nfs-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-frps-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-frpc-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-timewol-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-wechatpush-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-upnp-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-uhttpd-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-openvpn-server-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-appfilter-zh-cn"
+
 
 # 判断是否需要编译 Docker 插件
 if [ "$INCLUDE_DOCKER" = "yes" ]; then
