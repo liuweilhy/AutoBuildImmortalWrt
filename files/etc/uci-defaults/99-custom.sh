@@ -37,6 +37,19 @@ if [ "$count" -eq 1 ]; then
    # 单网口设备 不支持修改ip 不要在此处修改ip 
    uci set network.lan.proto='dhcp'
 elif [ "$count" -gt 1 ]; then
+   # 获取所有LAN物理接口
+   lan_ifnames=$(uci get network.lan.ifname)
+   # 提取第一个接口作为WAN
+   wan_iface=$(echo "$lan_ifnames" | awk '{print $1}')
+   # 剩余接口保留给LAN
+   new_lan_ifnames=$(echo "$lan_ifnames" | cut -d ' ' -f2-)
+   # 设置WAN接口基础配置
+   uci set network.wan=interface
+   uci set network.wan.ifname="$wan_iface"
+   # WAN接口默认DHCP
+   uci set network.wan.proto='dhcp'
+   # 更新LAN接口成员
+   uci set network.lan.ifname="$new_lan_ifnames"
    # 多网口设备 支持修改为别的ip地址
    uci set network.lan.ipaddr='192.168.123.1'
    echo "set 192.168.123.1 at $(date)" >> $LOGFILE
