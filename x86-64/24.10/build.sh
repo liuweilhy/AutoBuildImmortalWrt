@@ -28,7 +28,7 @@ PACKAGES="$PACKAGES curl"
 PACKAGES="$PACKAGES luci-i18n-diskman-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-firewall-zh-cn"
 # 服务——FileBrowser 用户名admin 密码admin
-PACKAGES="$PACKAGES luci-i18n-filebrowser-go-zh-cn"
+# PACKAGES="$PACKAGES luci-i18n-filebrowser-go-zh-cn"
 PACKAGES="$PACKAGES luci-app-argon-config"
 PACKAGES="$PACKAGES luci-i18n-argon-config-zh-cn"
 #24.10
@@ -49,7 +49,8 @@ PACKAGES="$PACKAGES luci-i18n-zerotier-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-smartdns-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-ddns-go-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nfs-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+# 取消多拨的mwan3插件，等它支持nftables再加入
+# PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
 # PACKAGES="$PACKAGES luci-app-syncdial"
 PACKAGES="$PACKAGES luci-i18n-frps-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-frpc-zh-cn"
@@ -61,6 +62,7 @@ PACKAGES="$PACKAGES luci-i18n-uhttpd-zh-cn"
 # PACKAGES="$PACKAGES luci-i18n-openvpn-server-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-cloudflared-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-appfilter-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
 
 # 判断是否需要编译 Docker 插件
 if [ "$INCLUDE_DOCKER" = "yes" ]; then
