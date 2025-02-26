@@ -16,6 +16,14 @@ uci add dhcp domain
 uci set "dhcp.@domain[-1].name=time.android.com"
 uci set "dhcp.@domain[-1].ip=203.107.6.88"
 
+# 检查配置文件pppoe-settings是否存在 该文件由build.sh动态生成
+SETTINGS_FILE="/etc/config/pppoe-settings"
+if [ ! -f "$SETTINGS_FILE" ]; then
+    echo "PPPoE settings file not found. Skipping." >> $LOGFILE
+else
+   # 读取pppoe信息($enable_pppoe、$pppoe_account、$pppoe_password)
+   . "$SETTINGS_FILE"
+fi
 
 # 计算网卡数量
 count=0
@@ -30,15 +38,6 @@ for iface in /sys/class/net/*; do
 done
 # 删除多余空格
 ifnames=$(echo "$ifnames" | awk '{$1=$1};1')
-
-# 检查配置文件pppoe-settings是否存在 该文件由build.sh动态生成
-SETTINGS_FILE="/etc/config/pppoe-settings"
-if [ ! -f "$SETTINGS_FILE" ]; then
-    echo "PPPoE settings file not found. Skipping." >> $LOGFILE
-else
-   # 读取pppoe信息($enable_pppoe、$pppoe_account、$pppoe_password)
-   . "$SETTINGS_FILE"
-fi
 
 # 网络设置
 if [ "$count" -eq 1 ]; then
@@ -94,6 +93,7 @@ elif [ "$count" -gt 1 ]; then
       echo "PPPoE is not enabled. Skipping configuration." >> $LOGFILE
    fi
 fi
+
 
 # 设置所有网口可访问网页终端
 uci delete ttyd.@ttyd[0].interface
