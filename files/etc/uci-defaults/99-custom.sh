@@ -94,7 +94,6 @@ elif [ "$count" -gt 1 ]; then
    fi
 fi
 
-
 # 设置所有网口可访问网页终端
 uci delete ttyd.@ttyd[0].interface
 

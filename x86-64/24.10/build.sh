@@ -38,6 +38,9 @@ PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
 PACKAGES="$PACKAGES luci-app-openclash"
 PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
 PACKAGES="$PACKAGES openssh-sftp-server"
+# 添加nftables对iptables的兼容层
+PACKAGES="$PACKAGES iptables-nft"
+PACKAGES="$PACKAGES ip6tables-nft"
 # 增加几个必备组件 方便用户安装iStore
 PACKAGES="$PACKAGES fdisk"
 PACKAGES="$PACKAGES script-utils"
@@ -49,8 +52,9 @@ PACKAGES="$PACKAGES luci-i18n-zerotier-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-smartdns-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-ddns-go-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nfs-zh-cn"
-# 取消多拨的mwan3插件，等它支持nftables再加入
-# PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+# 多线多拨mwan3插件，暂未支持nftables
+PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+# 单线多拨syncdial插件，大部分运营商已不支持
 # PACKAGES="$PACKAGES luci-app-syncdial"
 PACKAGES="$PACKAGES luci-i18n-frps-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-frpc-zh-cn"
@@ -68,6 +72,19 @@ PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
 if [ "$INCLUDE_DOCKER" = "yes" ]; then
     PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
     echo "Adding package: luci-i18n-dockerman-zh-cn"
+    # docker默认仅支持iptables规则，未支持nftables规则。所以再次添加防火墙规则支持nftables
+    uci add firewall forwarding
+    uci set firewall.@forwarding[-1].src='lan'
+    uci set firewall.@forwarding[-1].dest='docker'
+    uci add firewall forwarding
+    uci set firewall.@forwarding[-1].src='docker'
+    uci set firewall.@forwarding[-1].dest='lan'
+    uci add firewall forwarding
+    uci set firewall.@forwarding[-1].src='docker'
+    uci set firewall.@forwarding[-1].dest='wan'
+    uci commit firewall
+    /etc/init.d/firewall reload
+    echo "Adding dockerd firewall rules"
 fi
 
 # 构建镜像
