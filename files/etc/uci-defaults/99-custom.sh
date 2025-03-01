@@ -95,7 +95,7 @@ elif [ "$count" -gt 1 ]; then
 fi
 
 # 如果安装了docker，由于docker默认仅支持iptables规则，未支持nftables规则。所以添加防火墙转发规则支持nftables
-if uci show firewall | grep -q 'firewall.@zone[0].name=docker'; then
+if uci show firewall | grep -qE "firewall\.@zone\[\d+\]\.name='docker'"; then
     uci add firewall forwarding
     uci set firewall.@forwarding[-1].src='lan'
     uci set firewall.@forwarding[-1].dest='docker'
