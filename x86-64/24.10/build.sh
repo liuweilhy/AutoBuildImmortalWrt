@@ -38,6 +38,9 @@ PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
 PACKAGES="$PACKAGES luci-app-openclash"
 PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
 PACKAGES="$PACKAGES openssh-sftp-server"
+# 添加nftables对iptables的兼容层
+PACKAGES="$PACKAGES iptables-nft"
+PACKAGES="$PACKAGES ip6tables-nft"
 # 增加几个必备组件 方便用户安装iStore
 PACKAGES="$PACKAGES fdisk"
 PACKAGES="$PACKAGES script-utils"
@@ -49,8 +52,9 @@ PACKAGES="$PACKAGES luci-i18n-zerotier-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-smartdns-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-ddns-go-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nfs-zh-cn"
-# 取消多拨的mwan3插件，等它支持nftables再加入
-# PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+# 多线多拨mwan3插件，暂未支持nftables
+PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+# 单线多拨syncdial插件，大部分运营商已不支持
 # PACKAGES="$PACKAGES luci-app-syncdial"
 PACKAGES="$PACKAGES luci-i18n-frps-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-frpc-zh-cn"
