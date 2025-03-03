@@ -4,12 +4,7 @@
 LOGFILE="/tmp/uci-defaults-log.txt"
 echo "Starting 99-custom.sh at $(date)" >> $LOGFILE
 # 设置默认防火墙规则，方便虚拟机首次访问 WebUI
-zone_count=$(uci show firewall | grep -c "zone")
-if [ "$zone_count" -ge 2 ]; then
-   uci set firewall.@zone[1].input='ACCEPT'
-else
-   echo "Second firewall zone not found, skipping input rule setting." >> $LOGFILE
-fi
+uci set firewall.@zone[1].input='ACCEPT'
 
 # 设置主机名映射，解决安卓原生 TV 无法联网的问题
 uci add dhcp domain
@@ -93,7 +88,6 @@ elif [ "$count" -gt 1 ]; then
       echo "PPPoE is not enabled. Skipping configuration." >> $LOGFILE
    fi
 fi
-
 
 # 设置所有网口可访问网页终端
 uci delete ttyd.@ttyd[0].interface
