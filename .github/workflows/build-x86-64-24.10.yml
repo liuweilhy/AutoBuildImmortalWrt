@@ -3,13 +3,20 @@ name: build-x86-64-immortalwrt-24.10.0
 on:
   workflow_dispatch:
     inputs:
-      profile:
-        description: '请输入要编译固件大小 单位(MB)'
+      partsize:
+        description: '请输入要编译固件大小(单位MB)'
         required: true
         default: '1024'
       include_docker:
-        description: |
-          是否编译 Docker 插件
+        description: '是否编译Docker插件'
+        required: true
+        default: 'yes'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      include_others:
+        description: '是否编译拓展插件'
         required: true
         default: 'yes'
         type: choice
@@ -22,8 +29,8 @@ on:
         default: 'no'
         type: choice
         options:
-        - 'yes'
-        - 'no'
+          - 'yes'
+          - 'no'
       pppoe_account:
         description: "宽带账号 (若启用PPPoE)"
         required: false
@@ -42,7 +49,6 @@ jobs:
       - name: Set executable permissions
         run: chmod +x ${{ github.workspace }}/x86-64/build.sh
 
-
       - name: Validate PPPoE Inputs
         run: |
           if [[ "${{ inputs.enable_pppoe }}" == "yes" ]]; then
@@ -54,26 +60,42 @@ jobs:
 
       - name: Build ImmortalWrt-x86-64-efi
         run: |
-          profiles="${{ github.event.inputs.profile }}"
+          partsize="${{ github.event.inputs.partsize }}"
           include_docker="${{ github.event.inputs.include_docker }}"
-          IFS=',' read -r -a profile_array <<< "$profiles"
+          include_others="${{ github.event.inputs.include_others }}"
+          enable_pppoe="${{ github.event.inputs.enable_pppoe }}"
+          pppoe_account="${{ github.event.inputs.pppoe_account }}"
+          pppoe_password="${{ github.event.inputs.pppoe_password }}"
+
+          imagename=""
+          if [[ "$include_docker" == "yes" ]]; then
+            if [[ "include_others" == "yes" ]]; then
+              imagename="docker-plus"
+            else
+              imagename="docker"
+            fi
+          else
+            if [[ "include_others" == "yes" ]]; then
+              imagename="plus"
+            fi
+          fi
           
-          for profile in "${profile_array[@]}"; do
-            echo "Building for profile: $profile"
-            
-            docker run --rm -i \
-              --user root \
-              -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
-              -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
-              -v "${{ github.workspace }}/x86-64/imm.config:/home/build/immortalwrt/.config" \
-              -v "${{ github.workspace }}/x86-64/24.10/build.sh:/home/build/immortalwrt/build.sh" \
-              -e PROFILE=$profile \
-              -e INCLUDE_DOCKER=$include_docker \
-              -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
-              -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
-              -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
-              immortalwrt/imagebuilder:x86-64-openwrt-24.10.0 /bin/bash /home/build/immortalwrt/build.sh
-          done
+          echo "Building ImmortalWrt-x86-64-efi"
+          docker pull immortalwrt/imagebuilder:x86-64-openwrt-24.10.0
+          docker run --rm -i \
+            --user root \
+            -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
+            -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+            -v "${{ github.workspace }}/x86-64/imm.config:/home/build/immortalwrt/.config" \
+            -v "${{ github.workspace }}/x86-64/24.10/build.sh:/home/build/immortalwrt/build.sh" \
+            -e EXTRA_IMAGE_NAME=$imagename \
+            -e PARTSIZE=$partsize \
+            -e INCLUDE_DOCKER=$include_docker \
+            -e INCLUDE_OTHERS=$include_others \
+            -e ENABLE_PPPOE=$enable_pppoe \
+            -e PPPOE_ACCOUNT=$pppoe_account \
+            -e PPPOE_PASSWORD=$pppoe_password \
+            immortalwrt/imagebuilder:x86-64-openwrt-24.10.0 /bin/bash /home/build/immortalwrt/build.sh
 
       - name: Generate Firmware SHA-256
         run: |
@@ -83,19 +105,10 @@ jobs:
             sha256sum -c "$file.sha256"
           done
 
-      - name: Create info
-        run: |
-          if [ "${{ github.event.inputs.include_docker }}" == "yes" ]; then
-            extra_content="#### 默认带docker"
-            echo -e "\n $extra_content" >> ${{ github.workspace }}/info.md
-          else
-            echo -e "NO docker"
-          fi
-
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: Autobuild-x86-64
+          tag_name: v1.0
           body_path: ${{ github.workspace }}/info.md
           files: |
             ${{ github.workspace }}/*squashfs-combined-efi.img.gz
@@ -103,4 +116,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

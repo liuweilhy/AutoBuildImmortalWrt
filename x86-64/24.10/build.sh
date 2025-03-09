@@ -2,24 +2,29 @@
 # Log file for debugging
 LOGFILE="/tmp/uci-defaults-log.txt"
 echo "Starting 99-custom.sh at $(date)" >> $LOGFILE
-echo "编译固件大小为: $PROFILE MB"
-echo "Include Docker: $INCLUDE_DOCKER"
+echo "Image name:     $IMAGENAME"
+echo "Image size:     $PARTSIZE MB"
+echo "Include docker: $INCLUDE_DOCKER"
+echo "Include others: $INCLUDE_OTHERS"
+echo "Enable PPPOE:   $ENABLE_PPPOE"
+echo "PPPOE account:  $PPPOE_ACCOUNT"
+echo "PPPOE password: $PPPOE_PASSWORD"
 
-echo "Create pppoe-settings"
-mkdir -p  /home/build/immortalwrt/files/etc/config
 
 # 创建pppoe配置文件 yml传入环境变量ENABLE_PPPOE等 写入配置文件 供99-custom.sh读取
+echo "Create pppoe-settings"
+mkdir -p  /home/build/immortalwrt/files/etc/config
 cat << EOF > /home/build/immortalwrt/files/etc/config/pppoe-settings
 enable_pppoe=${ENABLE_PPPOE}
 pppoe_account=${PPPOE_ACCOUNT}
 pppoe_password=${PPPOE_PASSWORD}
 EOF
-
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
-# 输出调试信息
-echo "$(date '+%Y-%m-%d %H:%M:%S') - 开始编译..."
 
+
+# 输出调试信息
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Build start..."
 
 
 # 定义所需安装的包列表 下列插件你都可以自行删减
@@ -34,13 +39,7 @@ PACKAGES="$PACKAGES luci-i18n-argon-config-zh-cn"
 #24.10
 PACKAGES="$PACKAGES luci-i18n-package-manager-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-ttyd-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
-PACKAGES="$PACKAGES luci-app-openclash"
-PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
 PACKAGES="$PACKAGES openssh-sftp-server"
-# 添加nftables对iptables的兼容层
-PACKAGES="$PACKAGES iptables-nft"
-PACKAGES="$PACKAGES ip6tables-nft"
 # 增加几个必备组件 方便用户安装iStore
 PACKAGES="$PACKAGES fdisk"
 PACKAGES="$PACKAGES script-utils"
@@ -52,10 +51,6 @@ PACKAGES="$PACKAGES luci-i18n-zerotier-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-smartdns-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-ddns-go-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nfs-zh-cn"
-# 多线多拨mwan3插件，暂未支持nftables
-PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
-# 单线多拨syncdial插件，大部分运营商已不支持
-# PACKAGES="$PACKAGES luci-app-syncdial"
 PACKAGES="$PACKAGES luci-i18n-frps-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-frpc-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-timewol-zh-cn"
@@ -66,23 +61,53 @@ PACKAGES="$PACKAGES luci-i18n-uhttpd-zh-cn"
 # PACKAGES="$PACKAGES luci-i18n-openvpn-server-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-cloudflared-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-appfilter-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
+# PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
 
-# 判断是否需要编译 Docker 插件
-if [ "$INCLUDE_DOCKER" = "yes" ]; then
-    PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
-    echo "Adding package: luci-i18n-dockerman-zh-cn"
+
+# 判断是否需要编译Docker插件
+if [ "$INCLUDE_DOCKER" == "yes" ]; then
+  echo "Adding package: luci-i18n-dockerman-zh-cn"
+  # 添加nftables对iptables的兼容层
+  PACKAGES="$PACKAGES iptables-nft"
+  PACKAGES="$PACKAGES ip6tables-nft"
+  PACKAGES="$PACKAGES docker"
+  PACKAGES="$PACKAGES dockerd"
+  PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
 fi
+
+
+# 判断是否需要编译其它插件
+if [ "$INCLUDE_OTHERS" == "yes" ]; then
+  echo "Adding other packages:"
+  if [ "$INCLUDE_DOCKER" != "yes" ]; then
+    # 添加nftables对iptables的兼容层
+    PACKAGES="$PACKAGES iptables-nft"
+    PACKAGES="$PACKAGES ip6tables-nft"
+  fi
+  # 多线多拨mwan3插件，暂未支持nftables
+  PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+  # 单线多拨syncdial插件，大部分运营商已不支持
+  # PACKAGES="$PACKAGES luci-app-syncdial"
+  # 添加非官方插件
+  # PACKAGES="$PACKAGES luci-app-poweroff"
+  # PACKAGES="$PACKAGES luci-i18n-poweroff-zh-cn"
+  PACKAGES="$PACKAGES luci-app-openclash"
+  PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
+  PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
+else
+  # 添加官方插件
+  PACKAGES="$PACKAGES luci-app-openclash"
+  PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
+  PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
+fi
+
 
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
 echo "$PACKAGES"
-
-make image PROFILE="generic" PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE=$PROFILE
-
+make image PROFILE="generic" EXTRA_IMAGE_NAME="$IMAGENAME" PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE=$PARTSIZE
 if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Build failed!"
     exit 1
 fi
-
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Build completed successfully."
