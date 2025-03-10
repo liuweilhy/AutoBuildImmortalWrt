@@ -79,14 +79,16 @@ jobs:
 
           imagename=""
           if [[ "$include_docker" == "yes" ]]; then
-            if [[ "include_others" == "yes" ]]; then
+            if [[ "$include_others" == "yes" ]]; then
               imagename="docker-plus"
             else
               imagename="docker"
             fi
           else
-            if [[ "include_others" == "yes" ]]; then
+            if [[ "$include_others" == "yes" ]]; then
               imagename="plus"
+            else
+              imagename="lite"
             fi
           fi
           

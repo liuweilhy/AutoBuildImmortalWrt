@@ -1,9 +1,38 @@
 [![Github](https://img.shields.io/badge/Release文件可在国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://wkdaily.cpolar.top/archives/1) 
-#### ImmortalWrt自编译固件
-固件地址 `192.168.123.1`  
-用户名 `root` 密码：无  
-generic：不含docker及其它非官方插件的版本
-docker：含docker的版本
-plus：含其它非官方插件的版本
-docker-plus：含docker及其它非官方插件的版本
-
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">基于ImmortalWrt的自编译固件</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>固件地址</td>
+      <td><code>192.168.123.1</code></td>
+    </tr>
+    <tr>
+      <td>用户名</td>
+      <td><code>root</code></td>
+    </tr>
+    <tr>
+      <td>密码</td>
+      <td>无</td>
+    </tr>
+    <tr>
+      <td>lite</td>
+      <td>标准版本</td>
+    </tr>
+    <tr>
+      <td>plus</td>
+      <td>含其它非官方插件的版本</td>
+    </tr>
+    <tr>
+      <td>docker</td>
+      <td>含docker的版本</td>
+    </tr>
+    <tr>
+      <td>docker-plus</td>
+      <td>含docker及其它非官方插件的版本</td>
+    </tr>
+  </tbody>
+</table>
