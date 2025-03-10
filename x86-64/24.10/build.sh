@@ -89,8 +89,8 @@ if [ "$INCLUDE_OTHERS" == "yes" ]; then
   # 单线多拨syncdial插件，大部分运营商已不支持
   # PACKAGES="$PACKAGES luci-app-syncdial"
   # 添加非官方插件
-  # PACKAGES="$PACKAGES luci-app-poweroff"
-  # PACKAGES="$PACKAGES luci-i18n-poweroff-zh-cn"
+  PACKAGES="$PACKAGES luci-app-poweroffdevice"
+  PACKAGES="$PACKAGES luci-i18n-poweroffdevice-zh-cn"
   PACKAGES="$PACKAGES luci-app-openclash"
   PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
   PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
