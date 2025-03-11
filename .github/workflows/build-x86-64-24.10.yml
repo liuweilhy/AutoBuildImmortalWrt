@@ -77,6 +77,13 @@ jobs:
             wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v0.46.079/luci-app-openclash_0.46.079_all.ipk
           fi
 
+      - name: Add AdGuardHome core
+        run: |
+          mkdir -p "${{ github.workspace }}/files/usr/bin"
+          cd ${{ github.workspace }}/files/usr/bin
+          wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/AdGuardHome_v0.107.57/AdGuardHome
+          chmod +x AdGuardHome
+
       - name: Build ImmortalWrt-x86-64-efi
         run: |
           partsize="${{ github.event.inputs.partsize }}"
