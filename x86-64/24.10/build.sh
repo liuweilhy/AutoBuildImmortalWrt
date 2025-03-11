@@ -34,7 +34,6 @@ PACKAGES="$PACKAGES luci-i18n-diskman-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-firewall-zh-cn"
 # 服务——FileBrowser 用户名admin 密码admin
 # PACKAGES="$PACKAGES luci-i18n-filebrowser-go-zh-cn"
-PACKAGES="$PACKAGES luci-app-argon-config"
 PACKAGES="$PACKAGES luci-i18n-argon-config-zh-cn"
 #24.10
 PACKAGES="$PACKAGES luci-i18n-package-manager-zh-cn"
@@ -53,7 +52,7 @@ PACKAGES="$PACKAGES luci-i18n-ddns-go-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nfs-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-frps-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-frpc-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-timewol-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-wol-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-filemanager-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-wechatpush-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-upnp-zh-cn"
@@ -61,15 +60,15 @@ PACKAGES="$PACKAGES luci-i18n-uhttpd-zh-cn"
 # PACKAGES="$PACKAGES luci-i18n-openvpn-server-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-cloudflared-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-appfilter-zh-cn"
-# PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
 
 
 # 判断是否需要编译Docker插件
 if [ "$INCLUDE_DOCKER" == "yes" ]; then
-  echo "Adding package: luci-i18n-dockerman-zh-cn"
   # 添加nftables对iptables的兼容层
   PACKAGES="$PACKAGES iptables-nft"
   PACKAGES="$PACKAGES ip6tables-nft"
+  echo "Adding package: luci-i18n-dockerman-zh-cn"
   PACKAGES="$PACKAGES docker"
   PACKAGES="$PACKAGES dockerd"
   PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
@@ -89,10 +88,10 @@ if [ "$INCLUDE_OTHERS" == "yes" ]; then
   # 单线多拨syncdial插件，大部分运营商已不支持
   # PACKAGES="$PACKAGES luci-app-syncdial"
   # 一些VPN相关包
-  PACKAGES="$PACKAGES v2ray-geoip v2ray-geosite v2dat chinadns-ng hysteria"
+  PACKAGES="$PACKAGES v2ray-geoip v2ray-geosite v2dat geoview chinadns-ng"
   # 添加非官方插件
+  PACKAGES="$PACKAGES luci-app-autotimeset"
   PACKAGES="$PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
-  # PACKAGES="$PACKAGES luci-app-ssr-plus"
   PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
   PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
   PACKAGES="$PACKAGES luci-app-openclash"
