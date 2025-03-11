@@ -61,11 +61,20 @@ jobs:
       - name: Add other packages
         run: |
           mkdir -p "${{ github.workspace }}/packages"
+          cd ${{ github.workspace }}/packages
           if [[ "${{ github.event.inputs.include_others }}" == "yes" ]]; then
-            POWEROFFPATH="${{ github.workspace }}/packages/luci-app-poweroffdevice_1-4_all.ipk"
-            POWEROFFCNPATH="${{ github.workspace }}/packages/luci-i18n-poweroffdevice-zh-cn_1-4_all.ipk"
-            wget -O $POWEROFFPATH https://github.com/sirpdboy/luci-app-poweroffdevice/releases/download/v1.4/luci-app-poweroffdevice_1-4_all.ipk
-            wget -O $POWEROFFCNPATH https://github.com/sirpdboy/luci-app-poweroffdevice/releases/download/v1.4/luci-i18n-poweroffdevice-zh-cn_1-4_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v1.4/luci-app-poweroffdevice_1-4_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v1.4/luci-i18n-poweroffdevice-zh-cn_1-4_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/v2ray-geoip_2025.03.08-r1_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/v2ray-geosite_2025.03.08-r1_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/v2dat_2022.12.15.47b8ee51-r2_x86_64.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/mosdns_5.3.3-r4_x86_64.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/luci-app-mosdns_1.6.10-r1_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/luci-i18n-mosdns-zh-cn_25.061.23891.2523534_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/AdGuardHome_v0.107.57/luci-app-adguardhome_26.069.56331_9db3555_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/26.069.56331/luci-app-ssr-plus_26.069.56331.9db3555_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/25.3.2/luci-app-passwall2_25.3.2-r53_all.ipk
+            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v0.46.079/luci-app-openclash_0.46.079_all.ipk
           fi
 
       - name: Build ImmortalWrt-x86-64-efi

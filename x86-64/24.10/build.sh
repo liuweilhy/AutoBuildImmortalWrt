@@ -88,12 +88,16 @@ if [ "$INCLUDE_OTHERS" == "yes" ]; then
   PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
   # 单线多拨syncdial插件，大部分运营商已不支持
   # PACKAGES="$PACKAGES luci-app-syncdial"
+  # 一些VPN相关包
+  PACKAGES="$PACKAGES v2ray-geoip v2ray-geosite v2dat chinadns-ng hysteria"
   # 添加非官方插件
-  PACKAGES="$PACKAGES luci-app-poweroffdevice"
-  PACKAGES="$PACKAGES luci-i18n-poweroffdevice-zh-cn"
-  PACKAGES="$PACKAGES luci-app-openclash"
+  PACKAGES="$PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
+  PACKAGES="$PACKAGES luci-app-ssr-plus"
   PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
   PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
+  PACKAGES="$PACKAGES luci-app-openclash"
+  PACKAGES="$PACKAGES adguardhome luci-app-adguardhome"
+  PACKAGES="$PACKAGES mosdns luci-app-mosdns luci-i18n-mosdns-zh-cn"
 else
   # 添加官方插件
   PACKAGES="$PACKAGES luci-app-openclash"
