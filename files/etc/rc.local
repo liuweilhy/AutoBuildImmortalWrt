@@ -1,0 +1,40 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+
+# Log file for debugging
+LOGFILE="/tmp/rc.local.log"
+echo "Starting rc.local at $(date)" >> $LOGFILE
+
+APPFILTER_FILE="/usr/lib/lua/luci/controller/appfilter.lua"
+if [ -f "$APPFILTER_FILE" ]; then
+    sed -i 's/"admin", "services", "appfilter"/"admin", "control", "appfilter"/g' "$APPFILTER_FILE"
+    echo "appfilter is changed from services to control." >> $LOGFILE
+else
+    echo "appfilter.lua is not found." >> $LOGFILE
+fi
+
+NFTQOS_FILE="/usr/lib/lua/luci/controller/nft-qos.lua"
+if [ -f "$NFTQOS_FILE" ]; then
+    sed -i 's/"admin", "services", "nft-qos"/"admin", "network", "nft-qos"/g' "$NFTQOS_FILE"
+    echo "nft-qos is changed from services to network." >> $LOGFILE
+else
+    echo "nft-qos.lua is not found." >> $LOGFILE
+fi
+
+WOL_FILE="/usr/share/luci/menu.d/luci-app-wol.json"
+if [ -f "$WOL_FILE" ]; then
+    sed -i 's/"admin\/services\/wol/"admin\/control\/wol/g' "$WOL_FILE"
+    echo "wol is changed from services to control." >> $LOGFILE
+else
+    echo "luci-app-wol.json is not found." >> $LOGFILE
+fi
+
+NLBWMON_FILE="/usr/share/luci/menu.d/luci-app-nlbwmon.json"
+if [ -f "$NLBWMON_FILE" ]; then
+    sed -i 's/"admin\/services\/nlbw/"admin\/network\/nlbw/g' "$NLBWMON_FILE"
+    echo "nlbwmon is changed from services to network." >> $LOGFILE
+else
+    echo "luci-app-nlbwmon.json is not found." >> $LOGFILE
+fi
+
+exit 0

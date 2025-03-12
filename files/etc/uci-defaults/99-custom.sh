@@ -1,7 +1,7 @@
 #!/bin/sh
 # 99-custom.sh 就是immortalwrt固件首次启动时运行的脚本 位于固件内的/etc/uci-defaults/99-custom.sh
 # Log file for debugging
-LOGFILE="/tmp/uci-defaults-log.txt"
+LOGFILE="/tmp/99-custom.sh.log"
 echo "Starting 99-custom.sh at $(date)" >> $LOGFILE
 # 设置默认防火墙规则，方便虚拟机首次访问 WebUI
 uci set firewall.@zone[1].input='ACCEPT'
@@ -89,11 +89,20 @@ elif [ "$count" -gt 1 ]; then
    fi
 fi
 
-# 设置所有网口可访问网页终端
-uci delete ttyd.@ttyd[0].interface
-
 # 设置所有网口可连接 SSH
-uci set dropbear.@dropbear[0].Interface=''
+#uci set dropbear.@dropbear[0].Interface=''
+
+# 设置所有网口可访问网页终端
+if uci show ttyd | grep -q "ttyd.@ttyd\[0\]"; then
+    #uci set ttyd.@ttyd[0].interface=''
+fi
+
+# 默认不在wan口启动mwan3
+if uci show mwan3 | grep -q "mwan3.wan"; then
+    mwan3.wan.enable='0'
+fi
+
+# 提交修改
 uci commit
 
 # 设置编译作者信息
