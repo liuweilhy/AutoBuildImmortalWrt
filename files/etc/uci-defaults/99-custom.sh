@@ -93,13 +93,18 @@ fi
 #uci set dropbear.@dropbear[0].Interface=''
 
 # 设置所有网口可访问网页终端
-if uci show ttyd | grep -q "ttyd.@ttyd\[0\]"; then
-    #uci set ttyd.@ttyd[0].interface=''
+#if uci show ttyd | grep -q "ttyd.@ttyd\[0\]"; then
+#    uci set ttyd.@ttyd[0].interface=''
+#fi
+
+# 默认不启动mwan3
+if uci show mwan3 | grep -q "mwan3.wan.enabled"; then
+    uci set mwan3.wan.enabled='0'
 fi
 
-# 默认不在wan口启动mwan3
-if uci show mwan3 | grep -q "mwan3.wan"; then
-    uci set mwan3.wan.enable='0'
+# 默认不启用nft-qos限速
+if uci show nft-qos | grep -q "nft-qos.default"; then
+    uci set nft-qos.default.limit_enable='0'
 fi
 
 # 提交修改
