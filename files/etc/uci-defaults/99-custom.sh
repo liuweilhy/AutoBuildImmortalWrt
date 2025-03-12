@@ -99,7 +99,7 @@ fi
 
 # 默认不在wan口启动mwan3
 if uci show mwan3 | grep -q "mwan3.wan"; then
-    mwan3.wan.enable='0'
+    uci set mwan3.wan.enable='0'
 fi
 
 # 提交修改

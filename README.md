@@ -1,3 +1,58 @@
+# ImmortalWrt ImageBuilder
+这是一个fork自[wukongdaily/AutoBuildImmortalWrt](https://github.com/wukongdaily/AutoBuildImmortalWrt)的ImmortalWrt镜像构建工作流。  
+在原作者的基础上，对24.10版本x86-64架构做了一些改动，增加了一些第三方插件，调整了部分插件菜单位置，说明如下：  
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">基于ImmortalWrt的自编译固件</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>固件地址</td>
+      <td><code>192.168.123.1</code></td>
+    </tr>
+    <tr>
+      <td>用户名</td>
+      <td><code>root</code></td>
+    </tr>
+    <tr>
+      <td>密码</td>
+      <td>无</td>
+    </tr>
+    <tr>
+      <td>lite</td>
+      <td>标准版本</td>
+    </tr>
+    <tr>
+      <td>plus</td>
+      <td>含其它非官方插件的版本</td>
+    </tr>
+    <tr>
+      <td>docker</td>
+      <td>含docker的版本</td>
+    </tr>
+    <tr>
+      <td>docker-plus</td>
+      <td>含docker及其它非官方插件的版本</td>
+    </tr>
+  </tbody>
+</table>
+
+其中包含的第三方插件：
+1. PoweroffDevice关机插件: [https://github.com/sirpdboy/luci-app-poweroffdevice](https://github.com/sirpdboy/luci-app-poweroffdevice)
+2. AdGuardHome去广告插件: [https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/](https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/)
+3. Passwall插件: [https://github.com/xiaorouji/openwrt-passwall](https://github.com/xiaorouji/openwrt-passwall)
+4. MosDNS插件: [https://github.com/sbwml/luci-app-mosdns](https://github.com/sbwml/luci-app-mosdns)
+5. OpenClash插件: [https://github.com/vernesong/OpenClash](https://github.com/vernesong/OpenClash)
+
+docker-plus版本界面：<br>
+![docker-plus界面](./immortalwrt-docker-plus.png "docker-plus界面")
+
+
+
+
+# 以下是原作者的README
 # AutoBuildImmortalWrt
 [![GitHub](https://img.shields.io/github/license/wukongdaily/AutoBuildImmortalWrt.svg?label=LICENSE&logo=github&logoColor=%20)](https://github.com/wukongdaily/AutoBuildImmortalWrt/blob/master/LICENSE)
 ![GitHub Stars](https://img.shields.io/github/stars/wukongdaily/AutoBuildImmortalWrt.svg?style=flat&logo=appveyor&label=Stars&logo=github)
@@ -15,8 +70,8 @@
 
 
 ## 如何查询都有哪些插件?
-https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/23.05.4/packages/aarch64_cortex-a53/luci/ <br>
-https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/23.05.4/packages/x86_64/luci/ 
+https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10.0/packages/aarch64_cortex-a53/luci/ <br>
+https://mirrors.sjtug.sjtu.edu.cn/immortalwrt/releases/24.10.0/packages/x86_64/luci/ 
 
 ## 该固件默认属性？(必读)
 - 该固件刷入【单网口设备】默认采用DHCP模式,自动获得ip。类似NAS的做法
