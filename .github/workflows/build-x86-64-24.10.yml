@@ -76,7 +76,7 @@ jobs:
             # wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/25.3.2/luci-app-passwall2_25.3.2-r53_all.ipk
             wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v0.46.079/luci-app-openclash_0.46.079_all.ipk
             # wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-poweroffdevice_26.057.44252~a27aeb1_all.ipk
-            wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-autotimeset_26.057.44252~a27aeb1_all.ipk
+            wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-autotimeset_26.071.56495~ba3444f_all.ipk
             # wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/quickstart_0.9.7-r8_x86_64.ipk
             # wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-quickstart_26.057.44252~a27aeb1_all.ipk
           fi
