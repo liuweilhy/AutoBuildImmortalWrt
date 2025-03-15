@@ -59,17 +59,14 @@ PACKAGES="$PACKAGES luci-i18n-upnp-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-uhttpd-zh-cn"
 # PACKAGES="$PACKAGES luci-i18n-openvpn-server-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-cloudflared-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-appfilter-zh-cn"
+# PACKAGES="$PACKAGES luci-i18n-appfilter-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nft-qos-zh-cn"
+PACKAGES="$PACKAGES v2ray-geoip v2ray-geosite geoview chinadns-ng"
+
 # 添加nftables对iptables的兼容层
 PACKAGES="$PACKAGES iptables-nft"
 PACKAGES="$PACKAGES ip6tables-nft"
-# 一些VPN相关包
-PACKAGES="$PACKAGES v2ray-geoip v2ray-geosite geoview chinadns-ng"
-PACKAGES="$PACKAGES luci-app-openclash"
-PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
 
 
 # 判断是否需要编译Docker插件
@@ -89,11 +86,19 @@ if [ "$INCLUDE_OTHERS" == "yes" ]; then
   # 单线多拨syncdial插件，大部分运营商已不支持
   # PACKAGES="$PACKAGES luci-app-syncdial"
   # 添加非官方插件
+  PACKAGES="$PACKAGES v2dat ipt2socks xray-core sing-box"
+  PACKAGES="$PACKAGES shadowsocks-libev-config shadowsocks-libev-ss-local shadowsocks-libev-ss-redir shadowsocks-libev-ss-server shadowsocksr-libev-ssr-local shadowsocksr-libev-ssr-redir"
   PACKAGES="$PACKAGES luci-app-autotimeset"
   PACKAGES="$PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
   PACKAGES="$PACKAGES luci-app-adguardhome"
-  PACKAGES="$PACKAGES v2dat mosdns luci-app-mosdns luci-i18n-mosdns-zh-cn"
+  PACKAGES="$PACKAGES nikki luci-app-nikki luci-i18n-nikki-zh-cn"
+  PACKAGES="$PACKAGES mosdns luci-app-mosdns luci-i18n-mosdns-zh-cn"
 fi
+
+# 一些VPN相关包
+PACKAGES="$PACKAGES luci-app-openclash"
+PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn"
 
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"

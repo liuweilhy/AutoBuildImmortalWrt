@@ -63,36 +63,61 @@ jobs:
           mkdir -p "${{ github.workspace }}/packages"
           cd ${{ github.workspace }}/packages
           if [[ "${{ github.event.inputs.include_others }}" == "yes" ]]; then
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v1.4/luci-app-poweroffdevice_1-4_all.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v1.4/luci-i18n-poweroffdevice-zh-cn_1-4_all.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/v2ray-geoip_2025.03.08-r1_all.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/v2ray-geosite_2025.03.08-r1_all.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/v2dat_2022.12.15.47b8ee51-r2_x86_64.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/mosdns_5.3.3-r4_x86_64.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/luci-app-mosdns_1.6.10-r1_all.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v5.3.3-r4/luci-i18n-mosdns-zh-cn_25.061.23891.2523534_all.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/AdGuardHome_v0.107.57/luci-app-adguardhome_26.069.56331_9db3555_all.ipk
-            # wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/26.069.56331/luci-app-ssr-plus_26.069.56331.9db3555_all.ipk
-            # wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/25.3.2/luci-app-passwall2_25.3.2-r53_all.ipk
-            wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v0.46.079/luci-app-openclash_0.46.079_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-app-poweroffdevice_1-4_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-i18n-poweroffdevice-zh-cn_1-4_all.ipk
             # wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-poweroffdevice_26.057.44252~a27aeb1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocks-libev-ss-local_3.3.5-r13_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocks-libev-ss-redir_3.3.5-r13_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocks-libev-ss-server_3.3.5-r13_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocks-rust-sslocal_1.22.0-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocks-rust-ssserver_1.22.0-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocksr-libev-ssr-local_2.5.6-r11_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocksr-libev-ssr-redir_2.5.6-r11_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/shadowsocksr-libev-ssr-server_2.5.6-r11_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/simple-obfs_0.0.5-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/tcping_0.3-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/trojan-plus_10.0.3-r2_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/tuic-client_1.0.0-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/v2ray-geoip_202502050123.1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/v2ray-geoip_2025.03.08-r1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/v2ray-geosite_20250302153845.1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/v2ray-geosite_2025.03.08-r1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/v2dat_2022.12.15.47b8ee51-r2_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/geoview_0.1.2-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/ipt2socks_1.1.4-r3_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/chinadns-ng_2024.12.22-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/ipt2socks_1.1.4-r3_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/dns2socks_2.1-r2_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/naiveproxy_134.0.6998.39-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/microsocks_1.0.5-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/xray-core_25.3.6-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/xray-plugin_1.8.24-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/sing-box_1.11.4-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-24.10_luci-app-passwall_25.3.9-r1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-24.10_luci-i18n-passwall-zh-cn_25.067.58328.338d2ec_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/nikki_2025.03.10.c0de3c0e-r1_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-app-nikki_1.20.3-r1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-i18n-nikki-zh-cn_25.069.51345.f77c1f0_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/mosdns_5.3.3-r4_x86_64.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-app-mosdns_1.6.11-r1_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-i18n-mosdns-zh-cn_25.061.23891.2523534_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-app-adguardhome_26.073.73112_cf74332_all.ipk
+            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/luci-app-openclash_0.46.079_all.ipk
             wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-autotimeset_26.071.56495~ba3444f_all.ipk
-            # wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/quickstart_0.9.7-r8_x86_64.ipk
-            # wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-quickstart_26.057.44252~a27aeb1_all.ipk
           fi
 
       - name: Add AdGuardHome core
         run: |
           mkdir -p "${{ github.workspace }}/files/usr/bin"
           cd ${{ github.workspace }}/files/usr/bin
-          wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/AdGuardHome_v0.107.57/AdGuardHome
+          wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/AdGuardHome
           chmod +x AdGuardHome
 
       - name: Add OpenClash core
         run: |
           mkdir -p "${{ github.workspace }}/files/etc/openclash/core"
           cd ${{ github.workspace }}/files/etc/openclash/core
-          wget https://github.com/liuweilhy/RunFilesBuilder/releases/download/v0.46.079/clash_meta
+          wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/clash_meta
           chmod +x clash_meta
 
       - name: Build ImmortalWrt-x86-64-efi
