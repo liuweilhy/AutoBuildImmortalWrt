@@ -64,30 +64,27 @@ PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nft-qos-zh-cn"
 PACKAGES="$PACKAGES v2ray-geoip v2ray-geosite geoview chinadns-ng"
 
-# 添加nftables对iptables的兼容层
-PACKAGES="$PACKAGES iptables-nft"
-PACKAGES="$PACKAGES ip6tables-nft"
-
-
-# 判断是否需要编译Docker插件
+# 判断是否需要编译Docker和多拨插件
 if [ "$INCLUDE_DOCKER" == "yes" ]; then
+  # 添加nftables对iptables的兼容层
+  PACKAGES="$PACKAGES iptables-nft"
+  PACKAGES="$PACKAGES ip6tables-nft"
+  # 多线多拨mwan3插件，暂未支持nftables
+  PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
+  # 单线多拨syncdial插件，大部分运营商已不支持
+  # PACKAGES="$PACKAGES luci-app-syncdial"
   echo "Adding package: luci-i18n-dockerman-zh-cn"
   PACKAGES="$PACKAGES docker"
   PACKAGES="$PACKAGES dockerd"
   PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
 fi
 
-
 # 判断是否需要编译其它插件
 if [ "$INCLUDE_OTHERS" == "yes" ]; then
   echo "Adding other packages:"
-  # 多线多拨mwan3插件，暂未支持nftables
-  PACKAGES="$PACKAGES luci-i18n-mwan3-zh-cn"
-  # 单线多拨syncdial插件，大部分运营商已不支持
-  # PACKAGES="$PACKAGES luci-app-syncdial"
   # 添加非官方插件
   PACKAGES="$PACKAGES v2dat ipt2socks xray-core sing-box"
-  PACKAGES="$PACKAGES shadowsocks-libev-config shadowsocks-libev-ss-local shadowsocks-libev-ss-redir shadowsocks-libev-ss-server shadowsocksr-libev-ssr-local shadowsocksr-libev-ssr-redir"
+  # PACKAGES="$PACKAGES shadowsocks-libev-config shadowsocks-libev-ss-local shadowsocks-libev-ss-redir shadowsocks-libev-ss-server shadowsocksr-libev-ssr-local shadowsocksr-libev-ssr-redir"
   PACKAGES="$PACKAGES luci-app-autotimeset"
   PACKAGES="$PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
   PACKAGES="$PACKAGES luci-app-adguardhome"
