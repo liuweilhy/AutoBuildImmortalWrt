@@ -60,64 +60,120 @@ jobs:
 
       - name: Add other packages
         run: |
-          mkdir -p "${{ github.workspace }}/packages"
-          cd ${{ github.workspace }}/packages
           if [[ "${{ github.event.inputs.include_others }}" == "yes" ]]; then
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-app-poweroffdevice_1-4_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-i18n-poweroffdevice-zh-cn_1-4_all.ipk
-            # wget https://dl.openwrt.ai/packages-24.10/x86_64/kiddin9/luci-app-poweroffdevice_26.057.44252~a27aeb1_all.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocks-libev-ss-local_3.3.5-r13_x86_64.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocks-libev-ss-redir_3.3.5-r13_x86_64.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocks-libev-ss-server_3.3.5-r13_x86_64.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocks-rust-sslocal_1.22.0-r1_x86_64.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocks-rust-ssserver_1.22.0-r1_x86_64.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocksr-libev-ssr-local_2.5.6-r11_x86_64.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocksr-libev-ssr-redir_2.5.6-r11_x86_64.ipk
-            # wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/shadowsocksr-libev-ssr-server_2.5.6-r11_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/simple-obfs_0.0.5-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/tcping_0.3-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/trojan-plus_10.0.3-r2_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/tuic-client_1.0.0-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/v2ray-geoip_202502050123.1_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/v2ray-geoip_2025.03.08-r1_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/v2ray-geosite_20250302153845.1_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/v2ray-geosite_2025.03.08-r1_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/v2dat_2022.12.15.47b8ee51-r2_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/geoview_0.1.2-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/ipt2socks_1.1.4-r3_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/chinadns-ng_2024.12.22-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/dns2socks_2.1-r2_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/naiveproxy_134.0.6998.39-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/microsocks_1.0.5-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/xray-core_25.3.6-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/xray-plugin_1.8.24-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/sing-box_1.11.4-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-24.10_luci-app-passwall_25.3.9-r1_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-24.10_luci-i18n-passwall-zh-cn_25.067.58328.338d2ec_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/nikki_2025.03.14.1e22f4da-r1_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-app-nikki_1.21.0-r1_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-i18n-nikki-zh-cn_25.075.07002.9686e03_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/mosdns_5.3.3-r4_x86_64.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-app-mosdns_1.6.11-r1_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-i18n-mosdns-zh-cn_25.061.23891.2523534_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-app-adguardhome_26.074.56252_e90b423_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-app-openclash_0.46.079_all.ipk
-            wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250316/luci-app-autotimeset_26.071.56495_ba3444f_all.ipk
+            # 创建packages文件夹
+            packagesfolder=${{ github.workspace }}/packages
+            mkdir -p $packagesfolder
+
+            # 下载release内容
+            curl -sk --connect-timeout 10 "https://api.github.com/repos/liuweilhy/OpenwrtPackages/releases" > index.txt
+            if [ $? -ne 0 ]; then
+              echo "Failed to get version information, please check the network status."
+              exit 1
+            fi
+
+            # 最新版本号
+            latest_tag=$(grep "tag_name" index.txt | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//;s/ //')
+
+            # 获取下载链接
+            grep "browser_download_url" index.txt | grep "$latest_tag" > releases.txt
+
+            # 下载文件函数
+            download_file() {
+              local url=$1
+              local output_dir=$2
+              local filename=$(basename "$url")
+              echo "Downloading $filename to $output_dir..."
+              curl --connect-timeout 30 -m 600 -kLo "$output_dir/$filename" "$url"
+              if [ $? -ne 0 ]; then
+                echo "Error! Download $filename failed."
+                exit 1
+              fi
+            }
+           
+            # 提取下载链接
+            luci_app_poweroffdevice_=$(grep "browser_download_url" releases.txt | grep "luci-app-poweroffdevice_" | head -1 | awk -F '"' '{print $4}')
+            luci_i18n_poweroffdevice_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-poweroffdevice-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            simple_obfs_=$(grep "browser_download_url" releases.txt | grep "simple-obfs_" | head -1 | awk -F '"' '{print $4}')
+            tcping_=$(grep "browser_download_url" releases.txt | grep "tcping_" | head -1 | awk -F '"' '{print $4}')
+            trojan_plus_=$(grep "browser_download_url" releases.txt | grep "trojan-plus_" | head -1 | awk -F '"' '{print $4}')
+            tuic_client_=$(grep "browser_download_url" releases.txt | grep "tuic-client_" | head -1 | awk -F '"' '{print $4}')
+            v2ray_geoip_=$(grep "browser_download_url" releases.txt | grep -P "v2ray-geoip_\d{8}" | head -1 | awk -F '"' '{print $4}')
+            v2ray_geosite_=$(grep "browser_download_url" releases.txt | grep -P "v2ray-geosite_\d{8}" | head -1 | awk -F '"' '{print $4}')
+            v2dat_=$(grep "browser_download_url" releases.txt | grep "v2dat_" | head -1 | awk -F '"' '{print $4}')
+            geoview_=$(grep "browser_download_url" releases.txt | grep "geoview_" | head -1 | awk -F '"' '{print $4}')
+            ipt2socks_=$(grep "browser_download_url" releases.txt | grep "ipt2socks_" | head -1 | awk -F '"' '{print $4}')
+            chinadns_ng_=$(grep "browser_download_url" releases.txt | grep "chinadns-ng_" | head -1 | awk -F '"' '{print $4}')
+            dns2socks_=$(grep "browser_download_url" releases.txt | grep "dns2socks_" | head -1 | awk -F '"' '{print $4}')
+            naiveproxy_=$(grep "browser_download_url" releases.txt | grep "naiveproxy_" | head -1 | awk -F '"' '{print $4}')
+            microsocks_=$(grep "browser_download_url" releases.txt | grep "microsocks_" | head -1 | awk -F '"' '{print $4}')
+            xray_core_=$(grep "browser_download_url" releases.txt | grep "xray-core_" | head -1 | awk -F '"' '{print $4}')
+            xray_plugin_=$(grep "browser_download_url" releases.txt | grep "xray-plugin_" | head -1 | awk -F '"' '{print $4}')
+            sing_box_=$(grep "browser_download_url" releases.txt | grep "sing-box_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_passwall_=$(grep "browser_download_url" releases.txt | grep "luci-app-passwall_" | head -1 | awk -F '"' '{print $4}')
+            luci_i18n_passwall_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-passwall-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            nikki_=$(grep "browser_download_url" releases.txt | grep "nikki_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_nikki_=$(grep "browser_download_url" releases.txt | grep "luci-app-nikki_" | head -1 | awk -F '"' '{print $4}')
+            luci_i18n_nikki_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-nikki-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            mosdns_=$(grep "browser_download_url" releases.txt | grep "mosdns_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_mosdns_=$(grep "browser_download_url" releases.txt | grep "luci-app-mosdns_" | head -1 | awk -F '"' '{print $4}')
+            luci_i18n_mosdns_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-mosdns-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_adguardhome_=$(grep "browser_download_url" releases.txt | grep "luci-app-adguardhome_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_openclash_=$(grep "browser_download_url" releases.txt | grep "luci-app-openclash_" | head -1 | awk -F '"' '{print $4}')
+            mosdns_=$(grep "browser_download_url" releases.txt | grep "mosdns_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_autotimeset_=$(grep "browser_download_url" releases.txt | grep "mosdns_" | head -1 | awk -F '"' '{print $4}')
+           
+            # 下载文件到对应目录
+            download_file "$luci_app_poweroffdevice_" "$packagesfolder"
+            download_file "$luci_i18n_poweroffdevice_zh_cn_" "$packagesfolder"
+            download_file "$simple_obfs_" "$packagesfolder"
+            download_file "$tcping_" "$packagesfolder"
+            download_file "$trojan_plus_" "$packagesfolder"
+            download_file "$tuic_client_" "$packagesfolder"
+            download_file "$v2ray_geoip_" "$packagesfolder"
+            download_file "$v2ray_geosite_" "$packagesfolder"
+            download_file "$v2dat_" "$packagesfolder"
+            download_file "$geoview_" "$packagesfolder"
+            download_file "$ipt2socks_" "$packagesfolder"
+            download_file "$chinadns_ng_" "$packagesfolder"
+            download_file "$dns2socks_" "$packagesfolder"
+            download_file "$naiveproxy_" "$packagesfolder"
+            download_file "$microsocks_" "$packagesfolder"
+            download_file "$xray_core_" "$packagesfolder"
+            download_file "$xray_plugin_" "$packagesfolder"
+            download_file "$sing_box_" "$packagesfolder"
+            download_file "$luci_app_passwall_" "$packagesfolder"
+            download_file "$luci_i18n_passwall_zh_cn_" "$packagesfolder"
+            download_file "$nikki_" "$packagesfolder"
+            download_file "$luci_app_nikki_" "$packagesfolder"
+            download_file "$luci_i18n_nikki_zh_cn_" "$packagesfolder"
+            download_file "$mosdns_" "$packagesfolder"
+            download_file "$luci_app_mosdns_" "$packagesfolder"
+            download_file "$luci_i18n_mosdns_zh_cn_" "$packagesfolder"
+            download_file "$luci_app_adguardhome_" "$packagesfolder"
+            download_file "$luci_app_openclash_" "$packagesfolder"
+            download_file "$mosdns_" "$packagesfolder"
+            download_file "$luci_app_autotimeset_" "$packagesfolder"
+
+            # 下载 AdGuardHome 核心
+            files_usr_bin=${{ github.workspace }}/files/usr/bin
+            mkdir -p $files_usr_bin
+            adguardhome=$(grep "browser_download_url" releases.txt | grep "AdGuardHome" | head -1 | awk -F '"' '{print $4}')
+            download_file "$adguardhome" "$files_usr_bin"
+            chmod +x $files_usr_bin/AdGuardHome
+            
+            # 下载 clash 核心
+            files_etc_openclash_core=${{ github.workspace }}/files/etc/openclash/core
+            mkdir -p $files_etc_openclash_core
+            clash_meta=$(grep "browser_download_url" releases.txt | grep "clash_meta" | head -1 | awk -F '"' '{print $4}')
+            download_file "$clash_meta" "$files_etc_openclash_core"
+            chmod +x $files_etc_openclash_core/clash_meta
+
+            # 全部下载完毕
+            echo "Download completed."
+
+            rm -f index.txt releases.txt
           fi
-
-      - name: Add AdGuardHome core
-        run: |
-          mkdir -p "${{ github.workspace }}/files/usr/bin"
-          cd ${{ github.workspace }}/files/usr/bin
-          wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/AdGuardHome
-          chmod +x AdGuardHome
-
-      - name: Add OpenClash core
-        run: |
-          mkdir -p "${{ github.workspace }}/files/etc/openclash/core"
-          cd ${{ github.workspace }}/files/etc/openclash/core
-          wget https://github.com/liuweilhy/OpenwrtPackages/releases/download/24.10-x86-64-20250315/clash_meta
-          chmod +x clash_meta
 
       - name: Build ImmortalWrt-x86-64-efi
         run: |
