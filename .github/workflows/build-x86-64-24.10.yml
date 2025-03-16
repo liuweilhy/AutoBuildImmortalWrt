@@ -92,36 +92,35 @@ jobs:
             }
            
             # 提取下载链接
-            luci_app_poweroffdevice_=$(grep "browser_download_url" releases.txt | grep "luci-app-poweroffdevice_" | head -1 | awk -F '"' '{print $4}')
-            luci_i18n_poweroffdevice_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-poweroffdevice-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            simple_obfs_=$(grep "browser_download_url" releases.txt | grep "simple-obfs_" | head -1 | awk -F '"' '{print $4}')
-            tcping_=$(grep "browser_download_url" releases.txt | grep "tcping_" | head -1 | awk -F '"' '{print $4}')
-            trojan_plus_=$(grep "browser_download_url" releases.txt | grep "trojan-plus_" | head -1 | awk -F '"' '{print $4}')
-            tuic_client_=$(grep "browser_download_url" releases.txt | grep "tuic-client_" | head -1 | awk -F '"' '{print $4}')
-            v2ray_geoip_=$(grep "browser_download_url" releases.txt | grep -P "v2ray-geoip_\d{8}" | head -1 | awk -F '"' '{print $4}')
-            v2ray_geosite_=$(grep "browser_download_url" releases.txt | grep -P "v2ray-geosite_\d{8}" | head -1 | awk -F '"' '{print $4}')
-            v2dat_=$(grep "browser_download_url" releases.txt | grep "v2dat_" | head -1 | awk -F '"' '{print $4}')
-            geoview_=$(grep "browser_download_url" releases.txt | grep "geoview_" | head -1 | awk -F '"' '{print $4}')
-            ipt2socks_=$(grep "browser_download_url" releases.txt | grep "ipt2socks_" | head -1 | awk -F '"' '{print $4}')
-            chinadns_ng_=$(grep "browser_download_url" releases.txt | grep "chinadns-ng_" | head -1 | awk -F '"' '{print $4}')
-            dns2socks_=$(grep "browser_download_url" releases.txt | grep "dns2socks_" | head -1 | awk -F '"' '{print $4}')
-            naiveproxy_=$(grep "browser_download_url" releases.txt | grep "naiveproxy_" | head -1 | awk -F '"' '{print $4}')
-            microsocks_=$(grep "browser_download_url" releases.txt | grep "microsocks_" | head -1 | awk -F '"' '{print $4}')
-            xray_core_=$(grep "browser_download_url" releases.txt | grep "xray-core_" | head -1 | awk -F '"' '{print $4}')
-            xray_plugin_=$(grep "browser_download_url" releases.txt | grep "xray-plugin_" | head -1 | awk -F '"' '{print $4}')
-            sing_box_=$(grep "browser_download_url" releases.txt | grep "sing-box_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_poweroffdevice_=$(grep "browser_download_url" releases.txt | grep "/luci-app-poweroffdevice_" | head -1 | awk -F '"' '{print $4}')
+            luci_i18n_poweroffdevice_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-poweroffdevice-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            simple_obfs_=$(grep "browser_download_url" releases.txt | grep "/simple-obfs_" | head -1 | awk -F '"' '{print $4}')
+            tcping_=$(grep "browser_download_url" releases.txt | grep "/tcping_" | head -1 | awk -F '"' '{print $4}')
+            trojan_plus_=$(grep "browser_download_url" releases.txt | grep "/trojan-plus_" | head -1 | awk -F '"' '{print $4}')
+            tuic_client_=$(grep "browser_download_url" releases.txt | grep "/tuic-client_" | head -1 | awk -F '"' '{print $4}')
+            v2ray_geoip_=$(grep "browser_download_url" releases.txt | grep -P "/v2ray-geoip_\d{8}" | head -1 | awk -F '"' '{print $4}')
+            v2ray_geosite_=$(grep "browser_download_url" releases.txt | grep -P "/v2ray-geosite_\d{8}" | head -1 | awk -F '"' '{print $4}')
+            v2dat_=$(grep "browser_download_url" releases.txt | grep "/v2dat_" | head -1 | awk -F '"' '{print $4}')
+            geoview_=$(grep "browser_download_url" releases.txt | grep "/geoview_" | head -1 | awk -F '"' '{print $4}')
+            ipt2socks_=$(grep "browser_download_url" releases.txt | grep "/ipt2socks_" | head -1 | awk -F '"' '{print $4}')
+            chinadns_ng_=$(grep "browser_download_url" releases.txt | grep "/chinadns-ng_" | head -1 | awk -F '"' '{print $4}')
+            dns2socks_=$(grep "browser_download_url" releases.txt | grep "/dns2socks_" | head -1 | awk -F '"' '{print $4}')
+            naiveproxy_=$(grep "browser_download_url" releases.txt | grep "/naiveproxy_" | head -1 | awk -F '"' '{print $4}')
+            microsocks_=$(grep "browser_download_url" releases.txt | grep "/microsocks_" | head -1 | awk -F '"' '{print $4}')
+            xray_core_=$(grep "browser_download_url" releases.txt | grep "/xray-core_" | head -1 | awk -F '"' '{print $4}')
+            xray_plugin_=$(grep "browser_download_url" releases.txt | grep "/xray-plugin_" | head -1 | awk -F '"' '{print $4}')
+            sing_box_=$(grep "browser_download_url" releases.txt | grep "/sing-box_" | head -1 | awk -F '"' '{print $4}')
             luci_app_passwall_=$(grep "browser_download_url" releases.txt | grep "luci-app-passwall_" | head -1 | awk -F '"' '{print $4}')
             luci_i18n_passwall_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-passwall-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            nikki_=$(grep "browser_download_url" releases.txt | grep "nikki_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_nikki_=$(grep "browser_download_url" releases.txt | grep "luci-app-nikki_" | head -1 | awk -F '"' '{print $4}')
-            luci_i18n_nikki_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-nikki-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            mosdns_=$(grep "browser_download_url" releases.txt | grep "mosdns_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_mosdns_=$(grep "browser_download_url" releases.txt | grep "luci-app-mosdns_" | head -1 | awk -F '"' '{print $4}')
-            luci_i18n_mosdns_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-mosdns-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_adguardhome_=$(grep "browser_download_url" releases.txt | grep "luci-app-adguardhome_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_openclash_=$(grep "browser_download_url" releases.txt | grep "luci-app-openclash_" | head -1 | awk -F '"' '{print $4}')
-            mosdns_=$(grep "browser_download_url" releases.txt | grep "mosdns_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_autotimeset_=$(grep "browser_download_url" releases.txt | grep "mosdns_" | head -1 | awk -F '"' '{print $4}')
+            nikki_=$(grep "browser_download_url" releases.txt | grep -P "/nikki_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_nikki_=$(grep "browser_download_url" releases.txt | grep "/luci-app-nikki_" | head -1 | awk -F '"' '{print $4}')
+            luci_i18n_nikki_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-nikki-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            mosdns_=$(grep "browser_download_url" releases.txt | grep "/mosdns_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_mosdns_=$(grep "browser_download_url" releases.txt | grep "/luci-app-mosdns_" | head -1 | awk -F '"' '{print $4}')
+            luci_i18n_mosdns_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-mosdns-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_adguardhome_=$(grep "browser_download_url" releases.txt | grep "/luci-app-adguardhome_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_openclash_=$(grep "browser_download_url" releases.txt | grep "/luci-app-openclash_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_autotimeset_=$(grep "browser_download_url" releases.txt | grep "/luci-app-autotimeset_" | head -1 | awk -F '"' '{print $4}')
            
             # 下载文件到对应目录
             download_file "$luci_app_poweroffdevice_" "$packagesfolder"
@@ -158,14 +157,14 @@ jobs:
             # 下载 AdGuardHome 核心
             files_usr_bin=${{ github.workspace }}/files/usr/bin
             mkdir -p $files_usr_bin
-            adguardhome=$(grep "browser_download_url" releases.txt | grep "AdGuardHome" | head -1 | awk -F '"' '{print $4}')
+            adguardhome=$(grep "browser_download_url" releases.txt | grep "/AdGuardHome" | head -1 | awk -F '"' '{print $4}')
             download_file "$adguardhome" "$files_usr_bin"
             chmod +x $files_usr_bin/AdGuardHome
             
             # 下载 clash 核心
             files_etc_openclash_core=${{ github.workspace }}/files/etc/openclash/core
             mkdir -p $files_etc_openclash_core
-            clash_meta=$(grep "browser_download_url" releases.txt | grep "clash_meta" | head -1 | awk -F '"' '{print $4}')
+            clash_meta=$(grep "browser_download_url" releases.txt | grep "/clash_meta" | head -1 | awk -F '"' '{print $4}')
             download_file "$clash_meta" "$files_etc_openclash_core"
             chmod +x $files_etc_openclash_core/clash_meta
 
