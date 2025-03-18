@@ -62,6 +62,7 @@ PACKAGES="$PACKAGES luci-i18n-cloudflared-zh-cn"
 # PACKAGES="$PACKAGES luci-i18n-appfilter-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-attendedsysupgrade-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-nft-qos-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-banip-zh-cn"
 PACKAGES="$PACKAGES v2ray-geoip v2ray-geosite geoview chinadns-ng"
 
 # 判断是否需要编译Docker和多拨插件
