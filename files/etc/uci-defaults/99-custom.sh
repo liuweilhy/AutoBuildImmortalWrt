@@ -90,12 +90,12 @@ elif [ "$count" -gt 1 ]; then
 fi
 
 # 设置所有网口可连接 SSH
-#uci set dropbear.@dropbear[0].Interface=''
+uci set dropbear.@dropbear[0].Interface=''
 
 # 设置所有网口可访问网页终端
-#if uci show ttyd | grep -q "ttyd.@ttyd\[0\]"; then
-#    uci set ttyd.@ttyd[0].interface=''
-#fi
+if uci show ttyd | grep -q "ttyd.@ttyd\[0\]"; then
+    uci set ttyd.@ttyd[0].interface=''
+fi
 
 # 默认不启动mwan3
 if uci show mwan3 | grep -q "mwan3.wan.enabled"; then
