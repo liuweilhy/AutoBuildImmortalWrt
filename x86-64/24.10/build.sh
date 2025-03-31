@@ -12,15 +12,24 @@ echo "PPPOE password: $PPPOE_PASSWORD"
 
 
 # 创建pppoe配置文件 yml传入环境变量ENABLE_PPPOE等 写入配置文件 供99-custom.sh读取
-echo "Create pppoe-settings"
+echo "Create custom"
+if [ "$ENABLE_PPPOE" == "yes" ]; then
+  ENABLE_PPPOE=1
+else
+  ENABLE_PPPOE=0
+fi
 mkdir -p  /home/build/immortalwrt/files/etc/config
-cat << EOF > /home/build/immortalwrt/files/etc/config/pppoe-settings
-enable_pppoe=${ENABLE_PPPOE}
-pppoe_account=${PPPOE_ACCOUNT}
-pppoe_password=${PPPOE_PASSWORD}
+cat << EOF > /home/build/immortalwrt/files/etc/config/custom
+config custom 'main'
+	option enabled '1'
+
+config custom 'pppoe'
+	option enabled '${ENABLE_PPPOE}'
+	option account '${PPPOE_ACCOUNT}'
+	option password '${PPPOE_PASSWORD}'
 EOF
-echo "cat pppoe-settings"
-cat /home/build/immortalwrt/files/etc/config/pppoe-settings
+echo "cat custom"
+cat /home/build/immortalwrt/files/etc/config/custom
 
 
 # 输出调试信息
