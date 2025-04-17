@@ -199,7 +199,7 @@ jobs:
           fi
           
           echo "Building ImmortalWrt-x86-64-efi"
-          docker pull immortalwrt/imagebuilder:x86-64-openwrt-24.10.0
+          docker pull immortalwrt/imagebuilder:x86-64-openwrt-24.10.1
           docker run --rm -i \
             --user root \
             -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
