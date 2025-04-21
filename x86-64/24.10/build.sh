@@ -44,7 +44,7 @@ PACKAGES="$PACKAGES luci-i18n-firewall-zh-cn"
 # 服务——FileBrowser 用户名admin 密码admin
 # PACKAGES="$PACKAGES luci-i18n-filebrowser-go-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-argon-config-zh-cn"
-#24.10
+# 24.10
 PACKAGES="$PACKAGES luci-i18n-package-manager-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-ttyd-zh-cn"
 PACKAGES="$PACKAGES openssh-sftp-server"
@@ -95,8 +95,8 @@ if [ "$INCLUDE_OTHERS" == "yes" ]; then
   echo "Adding other packages:"
   # 添加非官方插件
   PACKAGES="$PACKAGES v2dat ipt2socks xray-core sing-box"
-  # PACKAGES="$PACKAGES shadowsocks-libev-config shadowsocks-libev-ss-local shadowsocks-libev-ss-redir shadowsocks-libev-ss-server shadowsocksr-libev-ssr-local shadowsocksr-libev-ssr-redir"
-  PACKAGES="$PACKAGES luci-app-autotimeset"
+  # PACKAGES="$PACKAGES shadowsocks-libev-config shadowsocksr-libev-ssr-local shadowsocksr-libev-ssr-redir"
+  PACKAGES="$PACKAGES luci-app-taskplan"
   PACKAGES="$PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
   PACKAGES="$PACKAGES luci-app-adguardhome"
   PACKAGES="$PACKAGES nikki luci-app-nikki luci-i18n-nikki-zh-cn"

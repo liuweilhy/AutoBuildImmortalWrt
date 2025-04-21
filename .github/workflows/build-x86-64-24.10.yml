@@ -120,7 +120,7 @@ jobs:
             luci_i18n_mosdns_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-mosdns-zh-cn_" | head -1 | awk -F '"' '{print $4}')
             luci_app_adguardhome_=$(grep "browser_download_url" releases.txt | grep "/luci-app-adguardhome_" | head -1 | awk -F '"' '{print $4}')
             luci_app_openclash_=$(grep "browser_download_url" releases.txt | grep "/luci-app-openclash_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_autotimeset_=$(grep "browser_download_url" releases.txt | grep "/luci-app-autotimeset_" | head -1 | awk -F '"' '{print $4}')
+            luci_app_taskplan_=$(grep "browser_download_url" releases.txt | grep "/luci-app-taskplan_" | head -1 | awk -F '"' '{print $4}')
            
             # 下载文件到对应目录
             download_file "$luci_app_poweroffdevice_" "$packagesfolder"
@@ -152,7 +152,7 @@ jobs:
             download_file "$luci_app_adguardhome_" "$packagesfolder"
             download_file "$luci_app_openclash_" "$packagesfolder"
             download_file "$mosdns_" "$packagesfolder"
-            download_file "$luci_app_autotimeset_" "$packagesfolder"
+            download_file "$luci_app_taskplan_" "$packagesfolder"
 
             # 下载 AdGuardHome 核心
             files_usr_bin=${{ github.workspace }}/files/usr/bin
@@ -214,7 +214,7 @@ jobs:
             -e ENABLE_PPPOE=$enable_pppoe \
             -e PPPOE_ACCOUNT=$pppoe_account \
             -e PPPOE_PASSWORD=$pppoe_password \
-            immortalwrt/imagebuilder:x86-64-openwrt-24.10.0 /bin/bash /home/build/immortalwrt/build.sh
+            immortalwrt/imagebuilder:x86-64-openwrt-24.10.1 /bin/bash /home/build/immortalwrt/build.sh
 
       - name: Generate Firmware SHA-256
         run: |
@@ -227,7 +227,7 @@ jobs:
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: v1.0
+          tag_name: v1.1
           body_path: ${{ github.workspace }}/info.md
           files: |
             ${{ github.workspace }}/*squashfs-combined-efi.img.gz
