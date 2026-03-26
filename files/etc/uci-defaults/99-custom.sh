@@ -13,7 +13,6 @@ uci set firewall.@zone[1].input='ACCEPT'
 uci add dhcp domain
 uci set "dhcp.@domain[-1].name=time.android.com"
 uci set "dhcp.@domain[-1].ip=203.107.6.88"
-uci commit dhcp
 
 # 检查配置文件pppoe-settings是否存在 该文件由build.sh动态生成
 SETTINGS_FILE="/etc/config/pppoe-settings"
@@ -25,14 +24,12 @@ else
 fi
 
 # 1. 先获取所有物理接口列表
-count=0
-count=0
+ifnames=""
+for iface in /sys/class/net/*; do
     iface_name=$(basename "$iface")
     if [ -e "$iface/device" ] && echo "$iface_name" | grep -Eq '^eth|^en'; then
         ifnames="$ifnames $iface_name"
     fi
-  fi
-  fi
 done
 ifnames=$(echo "$ifnames" | awk '{$1=$1};1')
 
@@ -61,6 +58,8 @@ case "$board_name" in
         ;;
 esac
 
+# 3. 配置网络
+if [ "$count" -eq 1 ]; then
     # 单网口设备，DHCP模式
     uci set network.lan.proto='dhcp'
     uci delete network.lan.ipaddr
@@ -68,7 +67,7 @@ esac
     uci delete network.lan.gateway
     uci delete network.lan.dns
     uci commit network
-   uci set network.lan.proto='dhcp'
+elif [ "$count" -gt 1 ]; then
     # 多网口设备配置
     # 配置WAN
     uci set network.wan=interface
@@ -172,48 +171,28 @@ config forwarding
   option src 'lan'
   option dest 'docker'
 EOF
-fi
+
 else
     echo "未检测到 Docker，跳过防火墙配置。"
 fi
-# 设置所有网口可连接 SSH
-uci set dropbear.@dropbear[0].Interface=''
-uci commit dropbear
-fi
-
 
 # 设置所有网口可访问网页终端
-if uci show ttyd | grep -q "ttyd.@ttyd\[0\]"; then
-    uci set ttyd.@ttyd[0].interface=''
-    uci commit ttyd
-fi
+uci delete ttyd.@ttyd[0].interface
 
-# 默认不启动mwan3
-if uci show mwan3 | grep -q "mwan3.wan.enabled"; then
-    uci set mwan3.wan.enabled='0'
-    uci commit mwan3
-fi
+# 设置所有网口可连接 SSH
+uci set dropbear.@dropbear[0].Interface=''
+uci commit
 
-# 默认不启用nft-qos限速
-if uci show nft-qos | grep -q "nft-qos.default"; then
-    uci set nft-qos.default.limit_enable='0'
-    uci commit nft-qos
-fi
+# 设置编译作者信息
+FILE_PATH="/etc/openwrt_release"
+NEW_DESCRIPTION="Packaged by wukongdaily"
+sed -i "s/DISTRIB_DESCRIPTION='[^']*'/DISTRIB_DESCRIPTION='$NEW_DESCRIPTION'/" "$FILE_PATH"
 
-NEW_DESCRIPTION="Compiled by liuweilhy"
-NEW_DESCRIPTION="Compiled by wukongdaily"
-NEW_DESCRIPTION="Compiled by wukongdaily"
 # 若luci-app-advancedplus (进阶设置)已安装 则去除zsh的调用 防止命令行报 /usb/bin/zsh: not found的提示
 if opkg list-installed | grep -q '^luci-app-advancedplus '; then
     sed -i '/\/usr\/bin\/zsh/d' /etc/profile
     sed -i '/\/bin\/zsh/d' /etc/init.d/advancedplus
     sed -i '/\/usr\/bin\/zsh/d' /etc/init.d/advancedplus
 fi
-
-# 配置文件custom设为不启用，避免已修改的配置在保留配置升级时被替换
-uci set custom.main.enabled='0'
-uci commit custom
-
-sed -i "s/DISTRIB_DESCRIPTION='[^']*'/DISTRIB_DESCRIPTION='$NEW_DESCRIPTION'/" "$FILE_PATH"
 
 exit 0
