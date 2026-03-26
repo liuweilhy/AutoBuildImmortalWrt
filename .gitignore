@@ -1,0 +1,63 @@
+# 编译生成的文件
+bin/
+build_dir/
+dl/
+feeds/
+staging_dir/
+tmp/
+logs/
+
+# 配置文件
+.config
+.config.save
+
+# 编译缓存
+*.o
+*.ko
+*.so
+*.a
+*.lo
+
+# 临时文件
+*~
+.#*
+*.swp
+*.swo
+
+# 日志文件
+*.log
+
+# IDE和编辑器文件
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Git相关
+.git/
+*.patch
+
+# 包管理
+packages/
+
+# 固件镜像（可选，如果你想跟踪生成的镜像就注释掉这行）
+*.img
+*.bin
+*.tar.gz
+*.zip
+
+# SSH密钥（安全考虑）
+*.key
+*.pem
+
+# 环境变量文件
+.env
+.env.local
+
+# 测试覆盖率
+coverage/
+*.lcov
