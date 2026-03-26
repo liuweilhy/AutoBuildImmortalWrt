@@ -1,22 +1,40 @@
-name: build-x86-64-immortalwrt-24.10
+name: build-x86-64-immortalwrt-24.10.x
 
 on:
   workflow_dispatch:
     inputs:
-      partsize:
-        description: '请输入要编译固件大小(单位MB)'
-        required: true
-        default: '1024'
-      include_docker:
-        description: '是否编译Docker和多拨插件'
-        required: true
-        default: 'yes'
+      luci_version:
+        description: "选择luci版本"
+        required: false
+        default: "24.10.5"
         type: choice
         options:
-          - 'yes'
-          - 'no'
+          - 24.10.0
+          - 24.10.1
+          - 24.10.2
+          - 24.10.3
+          - 24.10.4
+          - 24.10.5
+      custom_router_ip:
+        description: "请设置路由器的管理地址(仅对多网口路由器有效) 格式:192.168.x.1 或 10.x.x.1"
+        required: true
+        default: "192.168.100.1"
+      profile:
+        description: '请输入要编译固件大小 单位(MB)'
+        required: true
+        default: '1024'
+      enable_store:
+        description: "是否集成 store 商店"
+        required: true
+        type: boolean
+        default: true
+      enable_docker:
+        description: "是否编译 Docker 插件"
+        required: true
+        type: boolean
+        default: true
       include_others:
-        description: '是否编译拓展插件'
+        description: "是否编译拓展插件"
         required: true
         default: 'yes'
         type: choice
@@ -29,8 +47,8 @@ on:
         default: 'no'
         type: choice
         options:
-          - 'yes'
-          - 'no'
+        - 'yes'
+        - 'no'
       pppoe_account:
         description: "宽带账号 (若启用PPPoE)"
         required: false
@@ -47,16 +65,33 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set executable permissions
-        run: chmod +x ${{ github.workspace }}/x86-64/build-24.sh
+        run: chmod +x ${{ github.workspace }}/x86-64/lhy-build24.sh
+
+      - name: Save Custom Router IP into OpenWrt files
+        run: |
+          mkdir -p "${{ github.workspace }}/custom"
+          echo "${{ github.event.inputs.custom_router_ip }}" > "${{ github.workspace }}/custom/custom_router_ip.txt"
+          echo "您设置的路由器管理地址是:${{ github.event.inputs.custom_router_ip }}"
+          # 后续步骤会将该文件映射到路由器/etc/config/custom_router_ip.txt 以便用于开机脚本99-custom.sh读取用户设置的ip
 
       - name: Validate PPPoE Inputs
         run: |
-          if [[ "${{ github.event.inputs.enable_pppoe }}" == "yes" ]]; then
+          if [[ "${{ inputs.enable_pppoe }}" == "yes" ]]; then
             if [[ -z "${{ inputs.pppoe_account }}" || -z "${{ inputs.pppoe_password }}" ]]; then
               echo "Error: PPPoE account and password must be provided when PPPoE is enabled!"
               exit 1
             fi
           fi
+
+      # 下面安装iStore放入lhy-build24.sh中
+      #- name: Enable Store integration
+      #  run: |
+      #    if [ "${{ github.event.inputs.enable_store }}" == "true" ]; then
+      #      echo 'CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-store"' >> shell/lhy-custom-packages.sh
+      #      echo "✅ 已追加 luci-app-store"
+      #    else
+      #      echo "❎ 未启用 luci-app-store"
+      #    fi
 
       - name: Add other packages
         run: |
@@ -73,7 +108,7 @@ jobs:
             fi
 
             # 最新版本号
-            latest_tag=$(grep "tag_name" index.txt | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//;s/ //')
+            latest_tag=$(grep "tag_name" index.txt | head -n 1 | awk -F ":" '{print $2}' | sed 's/"//g;s/,//;s/ //')
 
             # 获取下载链接
             grep "browser_download_url" index.txt | grep "$latest_tag" > releases.txt
@@ -90,83 +125,56 @@ jobs:
                 exit 1
               fi
             }
-           
+
             # 提取下载链接
             luci_app_poweroffdevice_=$(grep "browser_download_url" releases.txt | grep "/luci-app-poweroffdevice_" | head -1 | awk -F '"' '{print $4}')
             luci_i18n_poweroffdevice_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-poweroffdevice-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            simple_obfs_=$(grep "browser_download_url" releases.txt | grep "/simple-obfs_" | head -1 | awk -F '"' '{print $4}')
-            tcping_=$(grep "browser_download_url" releases.txt | grep "/tcping_" | head -1 | awk -F '"' '{print $4}')
-            trojan_plus_=$(grep "browser_download_url" releases.txt | grep "/trojan-plus_" | head -1 | awk -F '"' '{print $4}')
-            tuic_client_=$(grep "browser_download_url" releases.txt | grep "/tuic-client_" | head -1 | awk -F '"' '{print $4}')
-            v2ray_geoip_=$(grep "browser_download_url" releases.txt | grep -P "/v2ray-geoip_\d{8}" | head -1 | awk -F '"' '{print $4}')
-            v2ray_geosite_=$(grep "browser_download_url" releases.txt | grep -P "/v2ray-geosite_\d{8}" | head -1 | awk -F '"' '{print $4}')
-            v2dat_=$(grep "browser_download_url" releases.txt | grep "/v2dat_" | head -1 | awk -F '"' '{print $4}')
-            geoview_=$(grep "browser_download_url" releases.txt | grep "/geoview_" | head -1 | awk -F '"' '{print $4}')
-            ipt2socks_=$(grep "browser_download_url" releases.txt | grep "/ipt2socks_" | head -1 | awk -F '"' '{print $4}')
-            chinadns_ng_=$(grep "browser_download_url" releases.txt | grep "/chinadns-ng_" | head -1 | awk -F '"' '{print $4}')
-            dns2socks_=$(grep "browser_download_url" releases.txt | grep "/dns2socks_" | head -1 | awk -F '"' '{print $4}')
-            naiveproxy_=$(grep "browser_download_url" releases.txt | grep "/naiveproxy_" | head -1 | awk -F '"' '{print $4}')
-            microsocks_=$(grep "browser_download_url" releases.txt | grep "/microsocks_" | head -1 | awk -F '"' '{print $4}')
-            xray_core_=$(grep "browser_download_url" releases.txt | grep "/xray-core_" | head -1 | awk -F '"' '{print $4}')
-            xray_plugin_=$(grep "browser_download_url" releases.txt | grep "/xray-plugin_" | head -1 | awk -F '"' '{print $4}')
-            sing_box_=$(grep "browser_download_url" releases.txt | grep "/sing-box_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_passwall_=$(grep "browser_download_url" releases.txt | grep "luci-app-passwall_" | head -1 | awk -F '"' '{print $4}')
-            luci_i18n_passwall_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-passwall-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            nikki_=$(grep "browser_download_url" releases.txt | grep -P "/nikki_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_nikki_=$(grep "browser_download_url" releases.txt | grep "/luci-app-nikki_" | head -1 | awk -F '"' '{print $4}')
-            luci_i18n_nikki_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-nikki-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            mosdns_=$(grep "browser_download_url" releases.txt | grep "/mosdns_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_mosdns_=$(grep "browser_download_url" releases.txt | grep "/luci-app-mosdns_" | head -1 | awk -F '"' '{print $4}')
-            luci_i18n_mosdns_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-mosdns-zh-cn_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_adguardhome_=$(grep "browser_download_url" releases.txt | grep "/luci-app-adguardhome_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_openclash_=$(grep "browser_download_url" releases.txt | grep "/luci-app-openclash_" | head -1 | awk -F '"' '{print $4}')
-            luci_app_taskplan_=$(grep "browser_download_url" releases.txt | grep "/luci-app-taskplan_" | head -1 | awk -F '"' '{print $4}')
-           
+            #v2ray_geoip_=$(grep "browser_download_url" releases.txt | grep -P "/v2ray-geoip_\d{8}" | head -1 | awk -F '"' '{print $4}')
+            #v2ray_geosite_=$(grep "browser_download_url" releases.txt | grep -P "/v2ray-geosite_\d{8}" | head -1 | awk -F '"' '{print $4}')
+            #v2dat_=$(grep "browser_download_url" releases.txt | grep "/v2dat_" | head -1 | awk -F '"' '{print $4}')
+            #luci_app_passwall_=$(grep "browser_download_url" releases.txt | grep "luci-app-passwall_" | head -1 | awk -F '"' '{print $4}')
+            #luci_i18n_passwall_zh_cn_=$(grep "browser_download_url" releases.txt | grep "luci-i18n-passwall-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            #nikki_=$(grep "browser_download_url" releases.txt | grep -P "/nikki_" | head -1 | awk -F '"' '{print $4}')
+            #luci_app_nikki_=$(grep "browser_download_url" releases.txt | grep "/luci-app-nikki_" | head -1 | awk -F '"' '{print $4}')
+            #luci_i18n_nikki_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-nikki-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            #mosdns_=$(grep "browser_download_url" releases.txt | grep "/mosdns_" | head -1 | awk -F '"' '{print $4}')
+            #luci_app_mosdns_=$(grep "browser_download_url" releases.txt | grep "/luci-app-mosdns_" | head -1 | awk -F '"' '{print $4}')
+            #luci_i18n_mosdns_zh_cn_=$(grep "browser_download_url" releases.txt | grep "/luci-i18n-mosdns-zh-cn_" | head -1 | awk -F '"' '{print $4}')
+            #luci_app_adguardhome_=$(grep "browser_download_url" releases.txt | grep "/luci-app-adguardhome_" | head -1 | awk -F '"' '{print $4}')
+            #luci_app_openclash_=$(grep "browser_download_url" releases.txt | grep "/luci-app-openclash_" | head -1 | awk -F '"' '{print $4}')
+            #luci_app_taskplan_=$(grep "browser_download_url" releases.txt | grep "/luci-app-taskplan_" | head -1 | awk -F '"' '{print $4}')
+
             # 下载文件到对应目录
             download_file "$luci_app_poweroffdevice_" "$packagesfolder"
             download_file "$luci_i18n_poweroffdevice_zh_cn_" "$packagesfolder"
-            download_file "$simple_obfs_" "$packagesfolder"
-            download_file "$tcping_" "$packagesfolder"
-            download_file "$trojan_plus_" "$packagesfolder"
-            download_file "$tuic_client_" "$packagesfolder"
-            download_file "$v2ray_geoip_" "$packagesfolder"
-            download_file "$v2ray_geosite_" "$packagesfolder"
-            download_file "$v2dat_" "$packagesfolder"
-            download_file "$geoview_" "$packagesfolder"
-            download_file "$ipt2socks_" "$packagesfolder"
-            download_file "$chinadns_ng_" "$packagesfolder"
-            download_file "$dns2socks_" "$packagesfolder"
-            download_file "$naiveproxy_" "$packagesfolder"
-            download_file "$microsocks_" "$packagesfolder"
-            download_file "$xray_core_" "$packagesfolder"
-            download_file "$xray_plugin_" "$packagesfolder"
-            download_file "$sing_box_" "$packagesfolder"
-            download_file "$luci_app_passwall_" "$packagesfolder"
-            download_file "$luci_i18n_passwall_zh_cn_" "$packagesfolder"
-            download_file "$nikki_" "$packagesfolder"
-            download_file "$luci_app_nikki_" "$packagesfolder"
-            download_file "$luci_i18n_nikki_zh_cn_" "$packagesfolder"
-            download_file "$mosdns_" "$packagesfolder"
-            download_file "$luci_app_mosdns_" "$packagesfolder"
-            download_file "$luci_i18n_mosdns_zh_cn_" "$packagesfolder"
-            download_file "$luci_app_adguardhome_" "$packagesfolder"
-            download_file "$luci_app_openclash_" "$packagesfolder"
-            download_file "$mosdns_" "$packagesfolder"
-            download_file "$luci_app_taskplan_" "$packagesfolder"
+            #download_file "$v2ray_geoip_" "$packagesfolder"
+            #download_file "$v2ray_geosite_" "$packagesfolder"
+            #download_file "$v2dat_" "$packagesfolder"
+            #download_file "$luci_app_passwall_" "$packagesfolder"
+            #download_file "$luci_i18n_passwall_zh_cn_" "$packagesfolder"
+            #download_file "$nikki_" "$packagesfolder"
+            #download_file "$luci_app_nikki_" "$packagesfolder"
+            #download_file "$luci_i18n_nikki_zh_cn_" "$packagesfolder"
+            #download_file "$mosdns_" "$packagesfolder"
+            #download_file "$luci_app_mosdns_" "$packagesfolder"
+            #download_file "$luci_i18n_mosdns_zh_cn_" "$packagesfolder"
+            #download_file "$luci_app_adguardhome_" "$packagesfolder"
+            #download_file "$luci_app_openclash_" "$packagesfolder"
+            #download_file "$luci_app_taskplan_" "$packagesfolder"
 
-            # 下载 AdGuardHome 核心
-            files_usr_bin=${{ github.workspace }}/files/usr/bin
-            mkdir -p $files_usr_bin
-            adguardhome=$(grep "browser_download_url" releases.txt | grep "/AdGuardHome" | head -1 | awk -F '"' '{print $4}')
-            download_file "$adguardhome" "$files_usr_bin"
-            chmod +x $files_usr_bin/AdGuardHome
-            
-            # 下载 clash 核心
-            files_etc_openclash_core=${{ github.workspace }}/files/etc/openclash/core
-            mkdir -p $files_etc_openclash_core
-            clash_meta=$(grep "browser_download_url" releases.txt | grep "/clash_meta" | head -1 | awk -F '"' '{print $4}')
-            download_file "$clash_meta" "$files_etc_openclash_core"
-            chmod +x $files_etc_openclash_core/clash_meta
+            ## 下载 AdGuardHome 核心
+            #files_usr_bin=${{ github.workspace }}/files/usr/bin
+            #mkdir -p $files_usr_bin
+            #adguardhome=$(grep "browser_download_url" releases.txt | grep "/AdGuardHome" | head -1 | awk -F '"' '{print $4}')
+            #download_file "$adguardhome" "$files_usr_bin"
+            #chmod +x $files_usr_bin/AdGuardHome
+
+            ## 下载 clash 核心
+            #files_etc_openclash_core=${{ github.workspace }}/files/etc/openclash/core
+            #mkdir -p $files_etc_openclash_core
+            #clash_meta=$(grep "browser_download_url" releases.txt | grep "/clash_meta" | head -1 | awk -F '"' '{print $4}')
+            #download_file "$clash_meta" "$files_etc_openclash_core"
+            #chmod +x $files_etc_openclash_core/clash_meta
 
             # 全部下载完毕
             echo "Download completed."
@@ -174,64 +182,59 @@ jobs:
             rm -f index.txt releases.txt
           fi
 
-      - name: Build ImmortalWrt-x86-64-efi
+      - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |
-          partsize="${{ github.event.inputs.partsize }}"
-          include_docker="${{ github.event.inputs.include_docker }}"
-          include_others="${{ github.event.inputs.include_others }}"
-          enable_pppoe="${{ github.event.inputs.enable_pppoe }}"
-          pppoe_account="${{ github.event.inputs.pppoe_account }}"
-          pppoe_password="${{ github.event.inputs.pppoe_password }}"
+          luci_version="${{ github.event.inputs.luci_version }}"
+          profile="${{ github.event.inputs.profile }}"
+          enable_store=${{ inputs.enable_store }}
+          enable_docker="${{ github.event.inputs.enable_docker }}"
+          include_others="${{ inputs.include_others }}"
 
           imagename=""
-          if [[ "$include_docker" == "yes" ]]; then
-            if [[ "$include_others" == "yes" ]]; then
-              imagename="docker-plus"
-            else
-              imagename="docker"
-            fi
-          else
-            if [[ "$include_others" == "yes" ]]; then
-              imagename="plus"
-            else
-              imagename="lite"
-            fi
-          fi
-          
-          echo "Building ImmortalWrt-x86-64-efi"
-          docker pull immortalwrt/imagebuilder:x86-64-openwrt-24.10.5
+          if [[ "$enable_store" == "true" ]]; then imagename="${imagename}-store"; fi
+          if [[ "$enable_docker" == "true" ]]; then imagename="${imagename}-docker"; fi
+          if [[ "$include_others" == "yes" ]]; then imagename="${imagename}-plus"; fi
+          imagename="${imagename#-}"
+
+          echo "Building for profile: $profile"
           docker run --rm -i \
             --user root \
             -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
             -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+            -v "${{ github.workspace }}/custom:/home/build/immortalwrt/files/etc/config" \
             -v "${{ github.workspace }}/packages:/home/build/immortalwrt/packages" \
             -v "${{ github.workspace }}/x86-64/imm.config:/home/build/immortalwrt/.config" \
-            -v "${{ github.workspace }}/x86-64/24.10/build-24.sh:/home/build/immortalwrt/build.sh" \
-            -e IMAGENAME=$imagename \
-            -e PARTSIZE=$partsize \
-            -e INCLUDE_DOCKER=$include_docker \
-            -e INCLUDE_OTHERS=$include_others \
-            -e ENABLE_PPPOE=$enable_pppoe \
-            -e PPPOE_ACCOUNT=$pppoe_account \
-            -e PPPOE_PASSWORD=$pppoe_password \
-            immortalwrt/imagebuilder:x86-64-openwrt-24.10.5 /bin/bash /home/build/immortalwrt/build.sh
+            -v "${{ github.workspace }}/shell:/home/build/immortalwrt/shell" \
+            -v "${{ github.workspace }}/x86-64/lhy-build24.sh:/home/build/immortalwrt/build.sh" \
+            -e LUCI_VERSION=${luci_version} \
+            -e CUSTOM_ROUTER_IP=${{ inputs.custom_router_ip }} \
+            -e PROFILE=${profile} \
+            -e ENABLE_STORE=${enable_store} \
+            -e ENABLE_DOCKER=${enable_docker} \
+            -e INCLUDE_OTHERS=${include_others} \
+            -e IMAGENAME=${imagename} \
+            -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
+            -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
+            -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
+          immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
 
-      - name: Generate Firmware SHA-256
+
+      - name: Create info
         run: |
-          cp ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz ${{ github.workspace }}
-          for file in *squashfs-combined-efi.img.gz; do
-            sha256sum "$file" > "$file.sha256"
-            sha256sum -c "$file.sha256"
-          done
+          # 读取现有 info.md 内容，导入router-info.md
+          cat ${{ github.workspace }}/info.md > ${{ github.workspace }}/router-info.md
+          # 替换默认IP地址为用户自定义IP
+          sed -i "s/192\.168\.100\.1/${{ github.event.inputs.custom_router_ip }}/g" ${{ github.workspace }}/router-info.md
+          # 替换软件包大小为用户自定义大小
+          sed -i "s/1024MB/${{ github.event.inputs.profile }}MB/g" ${{ github.workspace }}/router-info.md
 
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: v1.1
-          body_path: ${{ github.workspace }}/info.md
+          tag_name: Autobuild-x86-64
+          body_path: ${{ github.workspace }}/router-info.md
           files: |
-            ${{ github.workspace }}/*squashfs-combined-efi.img.gz
-            ${{ github.workspace }}/*.sha256
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

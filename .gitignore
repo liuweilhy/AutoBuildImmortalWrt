@@ -28,6 +28,7 @@ logs/
 *.log
 
 # IDE和编辑器文件
+.vs/
 .vscode/
 .idea/
 *.sublime-project
