@@ -11,8 +11,11 @@ echo "Enable PPPOE:   $ENABLE_PPPOE"
 echo "PPPOE account:  $PPPOE_ACCOUNT"
 echo "PPPOE password: $PPPOE_PASSWORD"
 
+# 判断是否需要编译我自定义的插件
+if [ "$INCLUDE_OTHERS" = "yes" ]; then
+  source shell/lhy-custom-packages.sh
+fi
 # 软件包信息
-source shell/lhy-custom-packages.sh
 source shell/switch_repository.sh
 echo "custom packages: $CUSTOM_PACKAGES"
 
@@ -116,12 +119,6 @@ fi
 if [ "$ENABLE_DOCKER" = "true" ]; then
     PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
     echo "Adding package: luci-i18n-dockerman-zh-cn"
-fi
-
-# 判断是否需要编译我自定义的插件
-if [ "$INCLUDE_OTHERS" = "yes" ]; then
-    PACKAGES="$PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
-    echo "Adding package: luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
 fi
 
 # 若构建openclash 则添加内核

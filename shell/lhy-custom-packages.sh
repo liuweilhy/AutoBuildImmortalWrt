@@ -68,6 +68,26 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-bandix luci-i18n-bandix-zh-cn"
 # 静态文件服务器dufs
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-dufs-zh-cn"
 
+#========以下是我的仓库内的软件，跟原作者仓库重复的就不要打开了=============↓
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-poweroffdevice"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-poweroffdevice-zh-cn"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-app-poweroffdevice"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-i18n-poweroffdevice-zh-cn"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES v2ray-geoip"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES v2ray-geosite"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES v2dat"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-app-passwall"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-i18n-passwall-zh-cn"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES nikki"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-app-nikki"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-i18n-nikki-zh-cn"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES mosdns"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-app-mosdns"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-i18n-mosdns-zh-cn"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-app-adguardhome"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-app-openclash"
+#CUSTOM-PACKAGES="$CUSTOM-PACKAGES luci-app-taskplan"
+
 #===========================以下imm仓库内的软件==============================↓
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-3cat-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-3ginfo-lite-zh-cn"

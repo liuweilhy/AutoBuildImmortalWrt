@@ -83,16 +83,6 @@ jobs:
             fi
           fi
 
-      # 下面安装iStore放入lhy-build24.sh中
-      #- name: Enable Store integration
-      #  run: |
-      #    if [ "${{ github.event.inputs.enable_store }}" == "true" ]; then
-      #      echo 'CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-store"' >> shell/lhy-custom-packages.sh
-      #      echo "✅ 已追加 luci-app-store"
-      #    else
-      #      echo "❎ 未启用 luci-app-store"
-      #    fi
-
       - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |
           luci_version="${{ github.event.inputs.luci_version }}"
