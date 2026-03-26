@@ -28,18 +28,35 @@ EOF
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
-# 第三方插件
+# 第三方插件，以及我自己的插件
 if [ -z "$CUSTOM_PACKAGES" ]; then
   echo "⚪️ 未选择 任何第三方软件包"
 else
   # ============= 同步第三方插件库==============
+  # 定义插件下载位置（写死别动）
+  DOWNLOADTAG=/home/build/immortalwrt/extra-packages/
+  mkdir -p $DOWNLOADTAG
+
+  # 下载我的插件
+  REPO="liuweilhy/OpenwrtPackages"
+  API_URL="https://api.github.com/repos/${REPO}/releases/latest"
+  echo "下载 $REPO 最新软件仓库"
+  wget -qO- "$API_URL" \
+    | grep -o '"browser_download_url": *"[^"]*"' \
+    | sed 's/"browser_download_url": *"//;s/"$//' \
+    | while read -r url; do
+        filename="${url##*/}"
+        echo "下载: $filename -> ${DOWNLOADTAG}${filename}"
+        wget -q -O "${DOWNLOADTAG}${filename}" "$url"
+      done
+  echo "下载 $REPO 最新软件仓库完成，文件保存于 $DOWNLOADTAG"
+
   # 同步第三方软件仓库run/ipk
   echo "🔄 正在同步第三方软件仓库 Cloning run file repo..."
   git clone --depth=1 https://github.com/wukongdaily/store.git /tmp/store-run-repo
 
   # 拷贝 run/x86 下所有 run 文件和ipk文件 到 extra-packages 目录
-  mkdir -p /home/build/immortalwrt/extra-packages
-  cp -r /tmp/store-run-repo/run/x86/* /home/build/immortalwrt/extra-packages/
+  cp -r /tmp/store-run-repo/run/x86/* $DOWNLOADTAG
 
   echo "✅ Run files copied to extra-packages:"
   ls -lh /home/build/immortalwrt/extra-packages/*.run
