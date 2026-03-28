@@ -114,6 +114,9 @@ PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
 if [ "$ENABLE_STORE" = "true" ]; then
     PACKAGES="$PACKAGES luci-app-store"
     echo "Adding package: luci-app-store"
+    # 依赖于luci-app-store的首页和网络向导
+    PACKAGES="$PACKAGES luci-i18n-quickstart-zh-cn"
+    echo "Adding package: luci-i18n-quickstart-zh-cn"
 fi
 
 # 判断是否需要编译 Docker 插件
