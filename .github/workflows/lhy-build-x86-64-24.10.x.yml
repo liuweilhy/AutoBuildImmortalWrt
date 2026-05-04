@@ -16,6 +16,11 @@ on:
           - 24.10.4
           - 24.10.5
           - 24.10.6
+      release_version:
+        description: "发布版本号，例如 1.2 或 v1.2；留空则使用默认发布版本"
+        required: false
+        default: ""
+        type: string
       custom_router_ip:
         description: "请设置路由器的管理地址(仅对多网口路由器有效) 格式:192.168.x.1 或 10.x.x.1"
         required: true
@@ -133,7 +138,8 @@ jobs:
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: Autobuild-x86-64
+          tag_name: ${{ inputs.release_version || 'Autobuild-x86-64' }}
+          name: ${{ inputs.release_version || 'Autobuild-x86-64' }}
           body_path: ${{ github.workspace }}/router-info.md
           files: |
             ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
