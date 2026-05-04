@@ -1,0 +1,20 @@
+#!/bin/sh
+
+APPFILTER_DIR="/etc/appfilter"
+FEATURE_CFG="$APPFILTER_DIR/feature.cfg"
+
+[ -d "$APPFILTER_DIR" ] || exit 0
+
+if [ -L "$FEATURE_CFG" ] && [ ! -e "$FEATURE_CFG" ]; then
+    rm -f "$FEATURE_CFG"
+fi
+
+[ -e "$FEATURE_CFG" ] && exit 0
+
+if [ -f "$APPFILTER_DIR/feature_cn.cfg" ]; then
+    ln -s feature_cn.cfg "$FEATURE_CFG"
+elif [ -f "$APPFILTER_DIR/feature_en.cfg" ]; then
+    ln -s feature_en.cfg "$FEATURE_CFG"
+fi
+
+exit 0
