@@ -65,13 +65,17 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: lhy-build-x86-64-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Set executable permissions
         run: chmod +x ${{ github.workspace }}/x86-64/lhy-build24.sh
@@ -92,19 +96,26 @@ jobs:
             fi
           fi
 
+      - name: Clean packages directory
+        run: |
+          # 清理上一次构建残留的旧 IPK，避免混入过期包
+          rm -rf "${{ github.workspace }}/packages"/* 2>/dev/null || true
+          echo "✅ packages 目录已清理"
+
       - name: Build ImmortalWrt-x86-64-efi 24.10.x
         run: |
           luci_version="${{ github.event.inputs.luci_version }}"
           profile="${{ github.event.inputs.profile }}"
           enable_store=${{ inputs.enable_store }}
           enable_docker="${{ github.event.inputs.enable_docker }}"
-          include_others="${{ inputs.include_others }}"
+          include_others="${{ github.event.inputs.include_others }}"
 
           imagename=""
           if [[ "$enable_store" == "true" ]]; then imagename="${imagename}-store"; fi
           if [[ "$enable_docker" == "true" ]]; then imagename="${imagename}-docker"; fi
           if [[ "$include_others" == "yes" ]]; then imagename="${imagename}-plus"; fi
           imagename="${imagename#-}"
+          imagename="${imagename:-base}"
 
           echo "Building for profile: $profile"
           docker run --rm -i \
@@ -137,9 +148,21 @@ jobs:
           sed -i "s/192\.168\.100\.1/${{ github.event.inputs.custom_router_ip }}/g" ${{ github.workspace }}/router-info.md
           # 替换软件包大小为用户自定义大小
           sed -i "s/1024MB/${{ github.event.inputs.profile }}MB/g" ${{ github.workspace }}/router-info.md
+          # 根据 UI 选项动态修正 store/docker/plus 三行，避免开关与说明不一致
+          RD="${{ github.workspace }}/router-info.md"
+          if [ "${{ inputs.enable_store }}" != "true" ]; then
+            sed -i '/<td>含iStore商店<\/td>/c\      <td>无iStore商店</td>' "$RD"
+          fi
+          if [ "${{ inputs.enable_docker }}" != "true" ]; then
+            sed -i '/<td>含docker<\/td>/c\      <td>无docker</td>' "$RD"
+          fi
+          if [ "${{ inputs.include_others }}" != "yes" ]; then
+            sed -i '/<td>含其它非官方插件<\/td>/c\      <td>无其它非官方插件</td>' "$RD"
+          fi
+          echo "✅ router-info.md 已根据当前构建选项生成"
 
       - name: Upload ImmortWrt as release assets
-        uses: softprops/action-gh-release@v2.2.1
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.release_version || 'Autobuild-x86-64' }}
           name: ${{ inputs.release_version || 'Autobuild-x86-64' }}

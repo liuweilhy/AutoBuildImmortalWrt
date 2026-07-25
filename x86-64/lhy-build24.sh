@@ -9,7 +9,8 @@ echo "enable docker:  $ENABLE_DOCKER"
 echo "Include others: $INCLUDE_OTHERS"
 echo "Enable PPPOE:   $ENABLE_PPPOE"
 echo "PPPOE account:  $PPPOE_ACCOUNT"
-echo "PPPOE password: $PPPOE_PASSWORD"
+echo "PPPOE password: ***"
+echo "PPPOE password length: ${#PPPOE_PASSWORD}"
 
 # 判断是否需要编译我自定义的插件
 if [ "$INCLUDE_OTHERS" = "yes" ]; then
@@ -51,13 +52,13 @@ else
     | while read -r url; do
         filename="${url##*/}"
         echo "下载: $filename -> ${MY_PACKAGES}${filename}"
-        wget -q -O "${MY_PACKAGES}${filename}" "$url"
+        wget -q -O "${MY_PACKAGES}${filename}" "$url" || { echo "❌ 下载失败: $url"; exit 1; }
       done
   echo "下载 $REPO 最新软件仓库完成，文件保存于 $MY_PACKAGES"
 
   # 同步第三方软件仓库run/ipk
   echo "🔄 正在同步第三方软件仓库 Cloning run file repo..."
-  git clone --depth=1 https://github.com/wukongdaily/store.git /tmp/store-run-repo
+  git clone --depth=1 https://github.com/wukongdaily/store.git /tmp/store-run-repo || { echo "❌ git clone store 仓库失败"; exit 1; }
 
   # 拷贝 run/x86 下所有 run 文件和ipk文件 到 extra-packages 目录
   cp -r /tmp/store-run-repo/run/x86/* $EXTRA_PACKAGES
@@ -131,18 +132,22 @@ if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
     mkdir -p files/etc/openclash/core
     # Download clash_meta
     META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-amd64-v1.tar.gz"
-    wget -qO- $META_URL | tar xOvz > files/etc/openclash/core/clash_meta
+    wget -qO- "$META_URL" | tar xOvz > files/etc/openclash/core/clash_meta || { echo "❌ 下载 clash_meta 失败"; exit 1; }
     chmod +x files/etc/openclash/core/clash_meta
     # Download GeoIP and GeoSite
-    wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -O files/etc/openclash/GeoIP.dat
-    wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -O files/etc/openclash/GeoSite.dat
+    wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -O files/etc/openclash/GeoIP.dat || { echo "❌ 下载 GeoIP.dat 失败"; exit 1; }
+    wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -O files/etc/openclash/GeoSite.dat || { echo "❌ 下载 GeoSite.dat 失败"; exit 1; }
     # Download latest openclash ipk (上游新功能)
     URL=$(curl -s https://api.github.com/repos/vernesong/OpenClash/releases/latest \
       | grep "browser_download_url.*ipk" \
       | head -n1 \
       | cut -d '"' -f 4)
     echo "OpenClash latest ipk: $URL"
-    wget "$URL" -P /home/build/immortalwrt/packages/
+    if [ -n "$URL" ]; then
+      wget "$URL" -P /home/build/immortalwrt/packages/ || { echo "❌ 下载 openclash ipk 失败"; exit 1; }
+    else
+      echo "⚠️ 未取到 OpenClash ipk 地址，跳过下载"
+    fi
 else
     echo "⚪️ 未选择 luci-app-openclash"
 fi
@@ -151,9 +156,17 @@ fi
 if echo "$PACKAGES" | grep -q "luci-app-ssr-plus"; then
     echo "✅ 已选择 luci-app-ssr-plus，添加 mihomo core"
     mkdir -p files/usr/bin
+    # 动态获取 mihomo 最新版本，避免长期落后
+    MIHOMO_TAG=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest \
+      | grep '"tag_name"' | head -n1 | cut -d '"' -f 4)
+    if [ -z "$MIHOMO_TAG" ]; then
+      echo "⚠️ 未获取到 mihomo 最新版本，回退到固定版本 v1.19.24"
+      MIHOMO_TAG="v1.19.24"
+    fi
+    echo "mihomo 版本: $MIHOMO_TAG"
     # Download mihomo
-    MIHOMO_URL="https://github.com/MetaCubeX/mihomo/releases/download/v1.19.24/mihomo-linux-amd64-compatible-v1.19.24.gz"
-    wget -qO- "$MIHOMO_URL" | gzip -dc > files/usr/bin/mihomo
+    MIHOMO_URL="https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_TAG}/mihomo-linux-amd64-compatible-${MIHOMO_TAG}.gz"
+    wget -qO- "$MIHOMO_URL" | gzip -dc > files/usr/bin/mihomo || { echo "❌ 下载 mihomo core 失败"; exit 1; }
     chmod +x files/usr/bin/mihomo
     echo "✅ 已下载 mihomo core"
     ls -lah files/usr/bin
@@ -167,7 +180,7 @@ if echo "$PACKAGES" | grep -q "luci-app-adguardhome"; then
     mkdir -p files/usr/bin
     # Download AdGuardHome
     META_URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_amd64.tar.gz"
-    wget -qO- $META_URL | tar xOvz > files/usr/bin/AdGuardHome
+    wget -qO- "$META_URL" | tar xOvz > files/usr/bin/AdGuardHome || { echo "❌ 下载 AdGuardHome 内核失败"; exit 1; }
     chmod +x files/usr/bin/AdGuardHome
 else
     echo "⚪️ 未选择 luci-app-adguardhome"
