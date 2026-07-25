@@ -6,14 +6,14 @@ echo "Image size:     $PROFILE MB"
 echo "router ip:      $CUSTOM_ROUTER_IP"
 echo "enable istore:  $ENABLE_STORE"
 echo "enable docker:  $ENABLE_DOCKER"
-echo "Include others: $INCLUDE_OTHERS"
+echo "Enable others:  $ENABLE_OTHERS"
 echo "Enable PPPOE:   $ENABLE_PPPOE"
 echo "PPPOE account:  $PPPOE_ACCOUNT"
 echo "PPPOE password: ***"
 echo "PPPOE password length: ${#PPPOE_PASSWORD}"
 
 # 判断是否需要编译我自定义的插件
-if [ "$INCLUDE_OTHERS" = "yes" ]; then
+if [ "$ENABLE_OTHERS" = "true" ]; then
   source shell/lhy-custom-packages.sh
 fi
 # 软件包信息

@@ -39,14 +39,11 @@ on:
         required: true
         type: boolean
         default: true
-      include_others:
+      enable_others:
         description: "是否编译拓展插件"
         required: true
-        default: 'yes'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
+        type: boolean
+        default: true
       enable_pppoe:
         description: "是否配置PPPoE拨号信息?"
         required: true
@@ -106,14 +103,14 @@ jobs:
         run: |
           luci_version="${{ github.event.inputs.luci_version }}"
           profile="${{ github.event.inputs.profile }}"
-          enable_store=${{ inputs.enable_store }}
+          enable_store=${{ github.event.inputs.enable_store }}
           enable_docker="${{ github.event.inputs.enable_docker }}"
-          include_others="${{ github.event.inputs.include_others }}"
+          enable_others="${{ github.event.inputs.enable_others }}"
 
           imagename=""
           if [[ "$enable_store" == "true" ]]; then imagename="${imagename}-store"; fi
           if [[ "$enable_docker" == "true" ]]; then imagename="${imagename}-docker"; fi
-          if [[ "$include_others" == "yes" ]]; then imagename="${imagename}-plus"; fi
+          if [[ "$enable_others" == "true" ]]; then imagename="${imagename}-plus"; fi
           imagename="${imagename#-}"
           imagename="${imagename:-base}"
 
@@ -132,7 +129,7 @@ jobs:
             -e PROFILE=${profile} \
             -e ENABLE_STORE=${enable_store} \
             -e ENABLE_DOCKER=${enable_docker} \
-            -e INCLUDE_OTHERS=${include_others} \
+            -e ENABLE_OTHERS=${enable_others} \
             -e IMAGENAME=${imagename} \
             -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
             -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
@@ -156,7 +153,7 @@ jobs:
           if [ "${{ inputs.enable_docker }}" != "true" ]; then
             sed -i '/<td>含docker<\/td>/c\      <td>无docker</td>' "$RD"
           fi
-          if [ "${{ inputs.include_others }}" != "yes" ]; then
+          if [ "${{ inputs.enable_others }}" != "true" ]; then
             sed -i '/<td>含其它非官方插件<\/td>/c\      <td>无其它非官方插件</td>' "$RD"
           fi
           echo "✅ router-info.md 已根据当前构建选项生成"
