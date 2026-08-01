@@ -26,9 +26,15 @@ on:
         required: true
         default: "192.168.100.1"
       profile:
-        description: '请输入要编译固件大小 单位(MB)'
+        description: '选择软件包空间大小'
         required: true
-        default: '1024'
+        type: choice
+        default: '1G'
+        options:
+          - '1G'
+          - '2G'
+          - '3G'
+          - '4G'
       enable_store:
         description: "是否集成 store 商店"
         required: true
@@ -103,18 +109,32 @@ jobs:
         run: |
           luci_version="${{ github.event.inputs.luci_version }}"
           profile="${{ github.event.inputs.profile }}"
-          enable_store=${{ github.event.inputs.enable_store }}
+          case "$profile" in
+            1G)
+              ROOTFS_SIZE=1024
+              ;;
+            2G)
+              ROOTFS_SIZE=2048
+              ;;
+            3G)
+              ROOTFS_SIZE=3072
+              ;;
+            4G)
+              ROOTFS_SIZE=4096
+              ;;
+          esac
+          echo "ROOTFS_SIZE=$ROOTFS_SIZE" >> $GITHUB_ENV
+          enable_store=${{ inputs.enable_store }}
           enable_docker="${{ github.event.inputs.enable_docker }}"
-          enable_others="${{ github.event.inputs.enable_others }}"
+          enable_others="${{ inputs.enable_others }}"
 
           imagename=""
           if [[ "$enable_store" == "true" ]]; then imagename="${imagename}-store"; fi
           if [[ "$enable_docker" == "true" ]]; then imagename="${imagename}-docker"; fi
           if [[ "$enable_others" == "true" ]]; then imagename="${imagename}-plus"; fi
           imagename="${imagename#-}"
-          imagename="${imagename:-base}"
 
-          echo "Building for profile: $profile"
+          echo "Building for rootfs_size: $profile"
           docker run --rm -i \
             --user root \
             -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
@@ -126,7 +146,7 @@ jobs:
             -v "${{ github.workspace }}/x86-64/lhy-build24.sh:/home/build/immortalwrt/build.sh" \
             -e LUCI_VERSION=${luci_version} \
             -e CUSTOM_ROUTER_IP=${{ inputs.custom_router_ip }} \
-            -e PROFILE=${profile} \
+            -e PROFILE=$ROOTFS_SIZE \
             -e ENABLE_STORE=${enable_store} \
             -e ENABLE_DOCKER=${enable_docker} \
             -e ENABLE_OTHERS=${enable_others} \
@@ -144,7 +164,7 @@ jobs:
           # 替换默认IP地址为用户自定义IP
           sed -i "s/192\.168\.100\.1/${{ github.event.inputs.custom_router_ip }}/g" ${{ github.workspace }}/router-info.md
           # 替换软件包大小为用户自定义大小
-          sed -i "s/1024MB/${{ github.event.inputs.profile }}MB/g" ${{ github.workspace }}/router-info.md
+          sed -i "s/1024MB/${{ github.event.inputs.profile }}/g" ${{ github.workspace }}/router-info.md
           # 根据 UI 选项动态修正 store/docker/plus 三行，避免开关与说明不一致
           RD="${{ github.workspace }}/router-info.md"
           if [ "${{ inputs.enable_store }}" != "true" ]; then
