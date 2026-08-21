@@ -45,11 +45,6 @@ on:
         required: true
         type: boolean
         default: true
-      enable_others:
-        description: "是否编译拓展插件"
-        required: true
-        type: boolean
-        default: true
       enable_pppoe:
         description: "是否配置PPPoE拨号信息?"
         required: true
@@ -126,12 +121,10 @@ jobs:
           echo "ROOTFS_SIZE=$ROOTFS_SIZE" >> $GITHUB_ENV
           enable_store=${{ inputs.enable_store }}
           enable_docker="${{ github.event.inputs.enable_docker }}"
-          enable_others="${{ inputs.enable_others }}"
 
           imagename=""
           if [[ "$enable_store" == "true" ]]; then imagename="${imagename}-store"; fi
           if [[ "$enable_docker" == "true" ]]; then imagename="${imagename}-docker"; fi
-          if [[ "$enable_others" == "true" ]]; then imagename="${imagename}-plus"; fi
           imagename="${imagename#-}"
 
           echo "Building for rootfs_size: $profile"
@@ -149,7 +142,6 @@ jobs:
             -e PROFILE=$ROOTFS_SIZE \
             -e ENABLE_STORE=${enable_store} \
             -e ENABLE_DOCKER=${enable_docker} \
-            -e ENABLE_OTHERS=${enable_others} \
             -e IMAGENAME=${imagename} \
             -e ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
             -e PPPOE_ACCOUNT=${{ inputs.pppoe_account }} \
@@ -165,16 +157,13 @@ jobs:
           sed -i "s/192\.168\.100\.1/${{ github.event.inputs.custom_router_ip }}/g" ${{ github.workspace }}/router-info.md
           # 替换软件包大小为用户自定义大小
           sed -i "s/1024MB/${{ github.event.inputs.profile }}/g" ${{ github.workspace }}/router-info.md
-          # 根据 UI 选项动态修正 store/docker/plus 三行，避免开关与说明不一致
+          # 根据 UI 选项动态修正 store/docker 两行，避免开关与说明不一致
           RD="${{ github.workspace }}/router-info.md"
           if [ "${{ inputs.enable_store }}" != "true" ]; then
             sed -i '/<td>含iStore商店<\/td>/c\      <td>无iStore商店</td>' "$RD"
           fi
           if [ "${{ inputs.enable_docker }}" != "true" ]; then
             sed -i '/<td>含docker<\/td>/c\      <td>无docker</td>' "$RD"
-          fi
-          if [ "${{ inputs.enable_others }}" != "true" ]; then
-            sed -i '/<td>含其它非官方插件<\/td>/c\      <td>无其它非官方插件</td>' "$RD"
           fi
           echo "✅ router-info.md 已根据当前构建选项生成"
 

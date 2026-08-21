@@ -4,7 +4,7 @@
 
 本仓库 fork 自 [wukongdaily/ImmortalWrt-ImageBuilder](https://github.com/wukongdaily/ImmortalWrt-ImageBuilder)，使用 GitHub Actions 基于 ImmortalWrt ImageBuilder 构建 x86-64 路由器固件。
 
-**主要差异：** 在原作基础上，针对 x86-64-24.10 版本定制了更多默认集成插件、自定义插件下载源、以及 WebUI 菜单项位置调整。
+**主要差异：** 在原作基础上，针对 x86-64-24.10 版本定制了更多默认集成插件和 WebUI 菜单项位置调整；第三方插件统一使用原作者（wukongdaily/store）源，不引入自建插件仓库。
 
 ---
 
@@ -24,8 +24,7 @@
 │           └── 60-appfilter-feature-cfg ← appfilter 功能配置
 │
 ├── shell/
-│   ├── lhy-custom-packages.sh          ← ⭐ 自定义：启用的第三方/仓库外插件列表
-│   ├── custom-packages.sh              ← 原文的第三方插件列表（与上游同步，仅作参考）
+│   ├── custom-packages.sh              ← 原作者的第三方插件列表（勾选第三方插件，与上游同步）
 │   ├── switch_repository.sh            ← 软件源切换
 │   └── prepare-packages.sh             ← IPK 解压准备
 │
@@ -55,7 +54,6 @@ GitHub Actions 工作流，触发方式：`workflow_dispatch`（手动触发）�
 | `profile` | string | 1024 | 固件大小(MB) |
 | `enable_store` | boolean | true | 是否集成 iStore 商店 |
 | `enable_docker` | boolean | true | 是否集成 Docker |
-| `enable_others` | boolean | true | 是否集成拓展插件 |
 | `enable_pppoe` | yes/no | no | 是否配置 PPPoE 拨号 |
 | `pppoe_account/password` | string | — | 宽带账号密码 |
 
@@ -75,11 +73,10 @@ GitHub Actions 工作流，触发方式：`workflow_dispatch`（手动触发）�
 
 **执行顺序：**
 1. 打印镜像信息（版本、IP、大小等）
-2. `source shell/lhy-custom-packages.sh`（仅当 enable_others=true）
+2. `source shell/custom-packages.sh`（第三方插件列表）
 3. `source shell/switch_repository.sh`（切换软件源仓库）
 4. 创建 PPPoE 配置文件
-5. 下载第三方插件：
-   - **自定义仓库：** `liuweilhy/OpenwrtPackages` 最新 Release 中的 IPK
+5. 下载第三方插件（原作者 store 仓库）：
    - **原作 store 仓库：** `wukongdaily/store` 中的 run/ipk 文件
 6. 组装 `PACKAGES` 变量（详见下方）
 7. 检测各插件并下载对应的内核二进制：
@@ -104,28 +101,14 @@ wechatpush, upnp, cloudflared
 
 ---
 
-### 3️⃣ `lhy-custom-packages.sh` — 自定义插件清单
+### 3️⃣ `shell/custom-packages.sh` — 第三方插件清单
 
-这个文件定义用户在 **拓展插件** 模式下额外集成的插件。通过取消注释行来启用/禁用。
+原作者提供、与上游同步，`lhy-build24.sh` 会无条件 `source` 它。通过取消注释行来启用/禁用 `CUSTOM_PACKAGES` 中的插件。
 
-**当前已启用的插件（通过 `CUSTOM_PACKAGES+=`）：**
-
-| 插件 | 说明 | 来源 |
-|------|------|------|
-| adguardhome | 去广告 | 第三方 |
-| geoview xray-core sing-box hysteria passwall-zh-cn | passwall 代理 | 第三方 |
-| nikki-zh-cn | 代理客户端 | Imm 仓库 |
-| watchdog | 看门狗 | 第三方 |
-| mosdns | DNS 分流 | 第三方 |
-| appfilter | 应用过滤 | 第三方 |
-| taskplan | 任务计划 | Imm 仓库 |
-| easytier | 组网工具 | 第三方 |
-| bandix | 流量监控 | 第三方 |
-| rtp2httpd | IPTV 转发 | 第三方 |
-| advanced-reboot (x2) | 高级重启 | Imm 仓库 |
+**当前默认全部注释（即不额外集成第三方插件）**，需要哪个插件直接取消对应行注释即可。
 
 **注释中可选的插件（取消注释即可启用）：**
-run, quickstart, quickfile, uninstall, aurora, openvpn, dae/daed, ssr-plus, passwall2, nekobox, momo, clashoo, openclash, homeproxy, wireguard, tailscale, partexp, kucat, advancedplus, turboacc, lucky, gecoosac, unishare, ipsec-vpnd, dufs 等。
+run, quickstart, quickfile, uninstall, aurora, adguardhome, openvpn, dae/daed, ssr-plus, passwall/passwall2, nikki, nekobox, momo, clashoo, openclash, homeproxy, wireguard, tailscale, partexp, kucat, advancedplus, turboacc, lucky, gecoosac, unishare, ipsec-vpnd, bandix, rtp2httpd, dufs 等。
 
 **⚠️ 冲突警告：**
 - `clashoo` 与 `nikki` 不能同时集成
@@ -174,7 +157,7 @@ run, quickstart, quickfile, uninstall, aurora, openvpn, dae/daed, ssr-plus, pass
 
 | 文件 | 同步策略 |
 |------|----------|
-| `shell/lhy-custom-packages.sh` | 手动合并 `shell/custom-packages.sh` 中新增/更新的插件选项到本文件对应位置 |
+| `shell/custom-packages.sh` | git merge 自动处理（直接使用上游版本） |
 | `x86-64/lhy-build24.sh` | 检查 `x86-64/build24.sh` 的结构性更新，选择性合并 |
 | `*.yml` 工作流 | 自定义工作流独立维护，不与上游同步 |
 | `files/etc/uci-defaults/99-custom.sh` | git merge 自动处理（直接使用上游版本） |
@@ -195,7 +178,7 @@ PACKAGES="$PACKAGES luci-i18n-diskman-zh-cn"
 
 ### 新增/移除第三方插件
 
-**位置：** `shell/lhy-custom-packages.sh`
+**位置：** `shell/custom-packages.sh`
 
 取消注释或添加新行：
 ```bash
@@ -228,7 +211,7 @@ files: |
 ```bash
 git fetch upstream
 git merge upstream/master
-# 检查冲突，更新 lhy-custom-packages.sh 中的插件选项
+# 检查冲突（custom-packages.sh 默认直接采用上游版本）
 git add -u && git commit -m "Merge upstream: <summary>"
 ```
 
@@ -240,9 +223,8 @@ git add -u && git commit -m "Merge upstream: <summary>"
 lhy-build-x86-64-24.10.x.yml
   ↓ (docker run -e ...)
 lhy-build24.sh (容器内)
-  ├── source lhy-custom-packages.sh   → 第三方插件列表
+  ├── source custom-packages.sh       → 第三方插件列表
   ├── source switch_repository.sh     → 软件源
-  ├── 下载 liuweilhy/OpenwrtPackages  → 我的自定义 IPK
   ├── 下载 wukongdaily/store          → 第三方 run/ipk
   ├── 检测/下载插件内核 (openclash/ssr-plus/adguardhome)
   └── make image → 生成 .img.gz

@@ -6,16 +6,13 @@ echo "Image size:     $PROFILE MB"
 echo "Router IP:      $CUSTOM_ROUTER_IP"
 echo "Enable iStore:  $ENABLE_STORE"
 echo "Enable Docker:  $ENABLE_DOCKER"
-echo "Enable others:  $ENABLE_OTHERS"
 echo "Enable PPPOE:   $ENABLE_PPPOE"
 echo "PPPOE account:  $PPPOE_ACCOUNT"
 echo "PPPOE password: ***"
 echo "PPPOE password length: ${#PPPOE_PASSWORD}"
 
-# 判断是否需要编译我自定义的插件
-if [ "$ENABLE_OTHERS" = "true" ]; then
-  source shell/lhy-custom-packages.sh
-fi
+# 合并imm仓库以外的第三方插件（与原作机制一致）
+source shell/custom-packages.sh
 # 软件包信息
 source shell/switch_repository.sh
 echo "custom packages: $CUSTOM_PACKAGES"
@@ -32,29 +29,14 @@ EOF
 echo "cat pppoe-settings"
 cat /home/build/immortalwrt/files/etc/config/pppoe-settings
 
-# 第三方插件，以及我自己的插件
+# 第三方插件（仅使用原作者 ipk 源）
 if [ -z "$CUSTOM_PACKAGES" ]; then
   echo "⚪️ 未选择 任何第三方软件包"
 else
   # ============= 同步第三方插件库==============
   # 定义插件下载位置（写死别动）
   EXTRA_PACKAGES="/home/build/immortalwrt/extra-packages/"
-  MY_PACKAGES="${EXTRA_PACKAGES}lhy/"
-  mkdir -p $EXTRA_PACKAGES $MY_PACKAGES
-
-  # 下载我的插件
-  REPO="liuweilhy/OpenwrtPackages"
-  API_URL="https://api.github.com/repos/${REPO}/releases/latest"
-  echo "下载 $REPO 最新软件仓库"
-  wget -qO- "$API_URL" \
-    | grep -o '"browser_download_url": *"[^"]*"' \
-    | sed 's/"browser_download_url": *"//;s/"$//' \
-    | while read -r url; do
-        filename="${url##*/}"
-        echo "下载: $filename -> ${MY_PACKAGES}${filename}"
-        wget -q -O "${MY_PACKAGES}${filename}" "$url" || { echo "❌ 下载失败: $url"; exit 1; }
-      done
-  echo "下载 $REPO 最新软件仓库完成，文件保存于 $MY_PACKAGES"
+  mkdir -p $EXTRA_PACKAGES
 
   # 同步第三方软件仓库run/ipk
   echo "🔄 正在同步第三方软件仓库 Cloning run file repo..."

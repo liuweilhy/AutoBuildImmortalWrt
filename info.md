@@ -30,9 +30,5 @@
       <td>docker</td>
       <td>含docker</td>
     </tr>
-    <tr>
-      <td>plus</td>
-      <td>含其它非官方插件</td>
-    </tr>
   </tbody>
 </table>
